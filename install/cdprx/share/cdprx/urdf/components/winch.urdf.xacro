@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Winch system macro -->
+    <xacro:macro name="winch" params="prefix parent *origin">
+        <!-- Motor housing -->
+        <link name="${prefix}_housing">
+            <visual>
+                <geometry>
+                    <box size="0.2 0.2 0.2"/>
+                </geometry>
+                <material name="motor_housing">
+                    <color rgba="0.2 0.2 0.2 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="0.2 0.2 0.2"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="2.0"/>
+                <inertia ixx="0.1" ixy="0" ixz="0" 
+                         iyy="0.1" iyz="0" izz="0.1"/>
+            </inertial>
+        </link>
+
+        <!-- Mount motor to parent -->
+        <joint name="${prefix}_mount" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${prefix}_housing"/>
+            <xacro:insert_block name="origin"/>
+        </joint>
+
+        <!-- Drum link -->
+        <link name="${prefix}_drum">
+            <visual>
+                <geometry>
+                    <cylinder radius="${drum_radius}" length="${drum_length}"/>
+                </geometry>
+                <material name="drum_material">
+                    <color rgba="0.8 0.8 0.8 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${drum_radius}" length="${drum_length}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1.0"/>
+                <inertia 
+                    ixx="${(1.0/12) * (3*drum_radius*drum_radius + drum_length*drum_length)}"
+                    iyy="${(1.0/12) * (3*drum_radius*drum_radius + drum_length*drum_length)}"
+                    izz="${0.5 * drum_radius*drum_radius}"
+                    ixy="0" ixz="0" iyz="0"/>
+            </inertial>
+        </link>
+
+        <!-- Drum rotation joint -->
+        <joint name="${prefix}_spin" type="continuous">
+            <parent link="${prefix}_housing"/>
+            <child link="${prefix}_drum"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <dynamics damping="0.1" friction="0.1"/>
+        </joint>
+
+        <!-- Add transmission for motor control -->
+        <transmission name="${prefix}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}_spin">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}_motor">
+                <mechanicalReduction>${winch_gear_ratio}</mechanicalReduction>
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+</robot>

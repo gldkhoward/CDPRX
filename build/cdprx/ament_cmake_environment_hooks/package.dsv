@@ -1,0 +1,4 @@
+source;share/cdprx/local_setup.bash
+source;share/cdprx/local_setup.dsv
+source;share/cdprx/local_setup.sh
+source;share/cdprx/local_setup.zsh
