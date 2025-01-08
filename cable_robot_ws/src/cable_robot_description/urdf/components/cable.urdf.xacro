@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- Cable macro for CDPR -->
-    <xacro:macro name="cable_macro" params="prefix base_point platform_point parent child">
+    <xacro:macro name="cable_macro" params="prefix parent child base_point:='0 0 0' platform_point:='0 0 0'">
         <!-- Virtual link for cable -->
         <link name="${prefix}_link">
             <visual>

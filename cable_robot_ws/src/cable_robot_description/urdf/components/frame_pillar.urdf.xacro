@@ -1,10 +1,24 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Include pillar properties -->
-    <xacro:include filename="$(find CDPRX)/urdf/properties/pillar_properties.xacro"/>
+    <!-- Pillar properties -->
+    <xacro:property name="pillar_base_length" value="0.3"/>
+    <xacro:property name="pillar_base_width" value="0.3"/>
+    <xacro:property name="pillar_base_height" value="0.05"/>
+    <xacro:property name="pillar_width" value="0.1"/>
+    <xacro:property name="pillar_length" value="0.1"/>
+    <xacro:property name="base_mass" value="5.0"/>
+    <xacro:property name="pillar_mass" value="10.0"/>
+    <xacro:property name="outlet_radius" value="0.02"/>
+    <xacro:property name="outlet_offset" value="0.02"/>
+    
+    <!-- Calculate inertias -->
+    <xacro:property name="base_ixx" value="${(base_mass/12.0) * (pillar_base_width*pillar_base_width + pillar_base_height*pillar_base_height)}"/>
+    <xacro:property name="base_iyy" value="${(base_mass/12.0) * (pillar_base_length*pillar_base_length + pillar_base_height*pillar_base_height)}"/>
+    <xacro:property name="pillar_ixx" value="${(pillar_mass/12.0) * (pillar_width*pillar_width)}"/>
+    <xacro:property name="pillar_iyy" value="${(pillar_mass/12.0) * (pillar_length*pillar_length)}"/>
     
     <!-- Single pillar macro -->
-    <xacro:macro name="frame_pillar" params="prefix parent position_x position_y height *origin outlet_heights:=^">
+    <xacro:macro name="frame_pillar" params="prefix parent position_x position_y height outlet_heights:=^">
         <!-- Base plate -->
         <link name="${prefix}_base">
             <visual>
@@ -59,7 +73,7 @@
                 <inertia 
                     ixx="${pillar_ixx}" ixy="0" ixz="0" 
                     iyy="${pillar_iyy}" iyz="0" 
-                    izz="${(pillar_mass/12.0) * (pillar_width*pillar_width + pillar_length*pillar_length)}"/>
+                    izz="${pillar_mass/12.0 * (pillar_width*pillar_width + pillar_length*pillar_length)}"/>
             </inertial>
         </link>
 

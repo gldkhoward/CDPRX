@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- Include the pillar macro -->
-    <xacro:include filename="$(find CDPRX)/urdf/components/pillar.urdf.xacro"/>
+    <xacro:include filename="$(find cable_robot_description)/urdf/components/frame_pillar.urdf.xacro"/>
     
     <!-- Complete frame macro -->
     <xacro:macro name="complete_frame" params="parent *origin">
@@ -23,47 +23,43 @@
         <!-- Define outlet configurations for each pillar -->
         <!-- Front right pillar -->
         <xacro:property name="fr_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
-        <xacro:property name="fr_angles" value="${[pi/4, pi/4]}"/>
-        
+
         <!-- Front left pillar -->
         <xacro:property name="fl_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
-        <xacro:property name="fl_angles" value="${[-pi/4, -pi/4]}"/>
-        
+
         <!-- Back right pillar -->
         <xacro:property name="br_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
-        <xacro:property name="br_angles" value="${[3*pi/4, 3*pi/4]}"/>
-        
+
         <!-- Back left pillar -->
         <xacro:property name="bl_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
-        <xacro:property name="bl_angles" value="${[-3*pi/4, -3*pi/4]}"/>
 
         <!-- Create four pillars -->
         <xacro:frame_pillar prefix="pillar_front_right" 
                            parent="frame_center" 
                            position_x="${frame_length/2}" 
                            position_y="${frame_width/2}"
-                           outlet_heights="${fr_heights}"
-                           outlet_angles="${fr_angles}"/>
+                           height="${frame_height}"
+                           outlet_heights="${fr_heights}"/>
 
         <xacro:frame_pillar prefix="pillar_front_left" 
                            parent="frame_center"
                            position_x="${frame_length/2}" 
                            position_y="${-frame_width/2}"
-                           outlet_heights="${fl_heights}"
-                           outlet_angles="${fl_angles}"/>
+                           height="${frame_height}"
+                           outlet_heights="${fl_heights}"/>
 
         <xacro:frame_pillar prefix="pillar_back_right" 
                            parent="frame_center"
                            position_x="${-frame_length/2}" 
                            position_y="${frame_width/2}"
-                           outlet_heights="${br_heights}"
-                           outlet_angles="${br_angles}"/>
+                           height="${frame_height}"
+                           outlet_heights="${br_heights}"/>
 
         <xacro:frame_pillar prefix="pillar_back_left" 
                            parent="frame_center"
                            position_x="${-frame_length/2}" 
                            position_y="${-frame_width/2}"
-                           outlet_heights="${bl_heights}"
-                           outlet_angles="${bl_angles}"/>
+                           height="${frame_height}"
+                           outlet_heights="${bl_heights}"/>
     </xacro:macro>
 </robot>

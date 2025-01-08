@@ -1,32 +1,45 @@
+#File path: cable_robot_ws/src/cable_robot_description/launch/gazebo.launch.py
+
 #!/usr/bin/env python3
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 import xacro
 
 def generate_launch_description():
+    # Get package directory
     pkg_name = 'cable_robot_description'
     pkg_dir = get_package_share_directory(pkg_name)
 
-    # Process URDF file
+    # Specify paths
+    gazebo_pkg_dir = get_package_share_directory('gazebo_ros')
     xacro_file = os.path.join(pkg_dir, 'urdf', 'cable_robot.urdf.xacro')
-    robot_description_content = xacro.process_file(xacro_file).toxml()
 
-    # Robot State Publisher node
+    # Create robot state publisher node
+    robot_description = Command([
+        'xacro ', xacro_file
+    ])
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        parameters=[{'robot_description': robot_description_content}]
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{
+            'robot_description': robot_description,
+            'use_sim_time': True
+        }]
     )
 
-    # Gazebo launch
+    # Launch Gazebo
     gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+        PythonLaunchDescriptionSource([
+            os.path.join(gazebo_pkg_dir, 'launch', 'gazebo.launch.py')
+        ])
     )
 
     # Spawn robot
@@ -39,7 +52,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        gazebo,
         robot_state_publisher,
-        spawn_entity,
+        gazebo,
+        spawn_entity
     ])

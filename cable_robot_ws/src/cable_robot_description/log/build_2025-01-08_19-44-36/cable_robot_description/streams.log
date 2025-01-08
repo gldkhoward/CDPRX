@@ -1,0 +1,40 @@
+[0.006s] Invoking command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake --build /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description -- -j24 -l24
+[0.040s] Invoked command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake --build /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description -- -j24 -l24
+[0.048s] Invoking command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake --install /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description
+[0.060s] -- Install configuration: ""
+[0.060s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/launch
+[0.060s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/launch/gazebo.launch.py
+[0.060s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/cdpr.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/testPillar.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/archive
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/archive/joint_limits.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/archive/dimensions.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/archive/pillarProps.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/archive/physical.xacro
+[0.061s] -- Installing: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/properties/pillar_properties.xacro
+[0.061s] -- Installing: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/cable_robot.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components/frame.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components/framePillar.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components/cable.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components/test_robot.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/urdf/components/winch.urdf.xacro
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/worlds
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/ament_index/resource_index/package_run_dependencies/cable_robot_description
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/ament_index/resource_index/parent_prefix_path/cable_robot_description
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/environment/ament_prefix_path.sh
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/environment/ament_prefix_path.dsv
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/environment/path.sh
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/environment/path.dsv
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/local_setup.bash
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/local_setup.sh
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/local_setup.zsh
+[0.061s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/local_setup.dsv
+[0.061s] -- Installing: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/package.dsv
+[0.062s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/ament_index/resource_index/packages/cable_robot_description
+[0.062s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/cmake/cable_robot_descriptionConfig.cmake
+[0.062s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/cmake/cable_robot_descriptionConfig-version.cmake
+[0.062s] -- Up-to-date: /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/install/cable_robot_description/share/cable_robot_description/package.xml
+[0.062s] Invoked command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake --install /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description
