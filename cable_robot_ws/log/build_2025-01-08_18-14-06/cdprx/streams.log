@@ -1,0 +1,38 @@
+[0.006s] Invoking command in '/home/luke/git/CDPRX/cable_robot_ws/build/cdprx': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_control -DCMAKE_INSTALL_PREFIX=/home/luke/git/CDPRX/cable_robot_ws/install/cdprx
+[0.012s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.087s] -- Found rclcpp: 16.0.11 (/opt/ros/humble/share/rclcpp/cmake)
+[0.101s] -- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.102s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.105s] -- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.110s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.116s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.132s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.133s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.193s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.219s] -- Found rclpy: 3.3.15 (/opt/ros/humble/share/rclpy/cmake)
+[0.219s] -- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)
+[0.225s] -- Found sensor_msgs: 4.2.4 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.234s] -- Found tf2: 0.25.9 (/opt/ros/humble/share/tf2/cmake)
+[0.236s] -- Found tf2_ros: 0.25.9 (/opt/ros/humble/share/tf2_ros/cmake)
+[0.276s] -- Found urdf: 2.6.1 (/opt/ros/humble/share/urdf/cmake)
+[0.285s] -- Found xacro: 2.0.8 (/opt/ros/humble/share/xacro/cmake)
+[0.290s] [31mCMake Error at CMakeLists.txt:32 (find_package):
+[0.290s]   By not providing "Findament_lint_auto.cmake" in CMAKE_MODULE_PATH this
+[0.290s]   project has asked CMake to find a package configuration file provided by
+[0.290s]   "ament_lint_auto", but CMake did not find one.
+[0.290s] 
+[0.290s]   Could not find a package configuration file provided by "ament_lint_auto"
+[0.290s]   with any of the following names:
+[0.290s] 
+[0.290s]     ament_lint_autoConfig.cmake
+[0.291s]     ament_lint_auto-config.cmake
+[0.291s] 
+[0.291s]   Add the installation prefix of "ament_lint_auto" to CMAKE_PREFIX_PATH or
+[0.291s]   set "ament_lint_auto_DIR" to a directory containing one of the above files.
+[0.291s]   If "ament_lint_auto" provides a separate development package or SDK, be
+[0.291s]   sure it has been installed.
+[0.291s] 
+[0.291s] [0m
+[0.291s] -- Configuring incomplete, errors occurred!
+[0.291s] See also "/home/luke/git/CDPRX/cable_robot_ws/build/cdprx/CMakeFiles/CMakeOutput.log".
+[0.295s] Invoked command in '/home/luke/git/CDPRX/cable_robot_ws/build/cdprx' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/luke/ros2_ws/install/sjtu_drone_control:/home/luke/ros2_ws/install/sjtu_drone_bringup:/opt/ros/humble /usr/bin/cmake /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_control -DCMAKE_INSTALL_PREFIX=/home/luke/git/CDPRX/cable_robot_ws/install/cdprx
