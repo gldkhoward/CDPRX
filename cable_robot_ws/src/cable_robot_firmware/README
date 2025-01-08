@@ -1,0 +1,177 @@
+# ESP32 Load Cell Data Publisher with micro-ROS
+
+This project implements a load cell data publisher using an ESP32 microcontroller and micro-ROS. The system reads force measurements from an HX711 load cell amplifier and publishes the data as ROS2 messages over WiFi.
+
+## Hardware Requirements
+
+- ESP32 Development Board
+- HX711 Load Cell Amplifier
+- Load Cell Sensor
+- USB Cable for programming
+- Computer running Ubuntu (tested on Ubuntu 20.04/22.04)
+
+## Pin Connections
+
+| HX711 Pin | ESP32 Pin |
+|-----------|-----------|
+| DOUT      | GPIO 21   |
+| SCK       | GPIO 19   |
+| VCC       | 3.3V/5V   |
+| GND       | GND       |
+
+## Software Prerequisites
+
+1. Install ROS2 Humble (follow instructions at [ROS2 Installation Guide](https://docs.ros.org/en/humble/Installation.html))
+
+2. Install PlatformIO (VSCode Extension or CLI)
+   ```bash
+   pip install platformio
+   ```
+
+3. Install micro-ROS build system:
+   ```bash
+   # Create a new workspace for micro-ROS
+   mkdir ~/microros_ws
+   cd ~/microros_ws
+
+   # Clone the micro-ROS setup repository
+   git clone -b humble https://github.com/micro-ROS/micro-ros-setup.git src/micro-ros-setup
+
+   # Install dependencies
+   sudo apt update && rosdep update
+   rosdep install --from-paths src --ignore-src -y
+
+   # Build the workspace
+   colcon build
+   source install/local/setup.bash
+
+   # Create and build the micro-ROS agent
+   ros2 run micro_ros_setup create_agent_ws.sh
+   ros2 run micro_ros_setup build_agent.sh
+   ```
+
+## Project Setup
+
+1. Create a new PlatformIO project
+   - Board: ESP32 Dev Module
+   - Framework: Arduino
+
+2. Add required dependencies to `platformio.ini`:
+   ```ini
+   [env:esp32dev]
+   platform = espressif32
+   board = esp32dev
+   framework = arduino
+   monitor_speed = 115200
+    build_type = release
+
+    board_microros_transport = wifi
+    board_microros_distro = humble
+   lib_deps =
+       https://github.com/bogde/HX711
+       https://github.com/micro-ROS/micro_ros_platformio
+   
+   build_flags = 
+       -L .pio/libdeps/esp32dev/micro_ros_platformio/src/cortex_m0
+   ```
+
+3. Create a `credentials.h` file:
+   ```cpp
+   #ifndef CREDENTIALS_H
+   #define CREDENTIALS_H
+
+   #define WIFI_SSID "your_wifi_name"
+   #define WIFI_PASSWORD "your_wifi_password"
+   #define AGENT_IP {192,168,1,XXX}  // Replace with your computer's IP
+   #define AGENT_PORT 8888
+
+   #endif
+   ```
+
+4. Upload the provided code to your ESP32 (main.cpp content as shown in previous messages)
+
+## Running the System
+
+1. Find your computer's IP address:
+   ```bash
+   ip addr show
+   ```
+   Look for the wireless interface (usually wlan0 or similar) and note the inet address.
+
+2. Update the `AGENT_IP` in `credentials.h` with your computer's IP address.
+
+3. Start the micro-ROS agent:
+   ```bash
+   # Source your ROS2 and micro-ROS workspace
+   source /opt/ros/humble/setup.bash
+   source ~/microros_ws/install/local/setup.bash
+
+   # Run the agent
+   ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
+   ```
+
+4. Upload the code to your ESP32 using PlatformIO.
+
+5. Monitor the serial output:
+   ```bash
+   pio device monitor
+   ```
+
+6. In a new terminal, monitor the published topics:
+   ```bash
+   # List all topics
+   ros2 topic list
+
+   # Monitor force readings
+   ros2 topic echo /force_readings
+
+   # Check publishing rate
+   ros2 topic hz /force_readings
+
+   # View data plot
+   rqt_plot /force_readings/data
+   ```
+
+## Troubleshooting
+
+1. WiFi Connection Issues:
+   - Ensure correct WiFi credentials in `credentials.h`
+   - Verify ESP32 is within range of WiFi router
+   - Check if network is 2.4GHz (ESP32 doesn't support 5GHz by default)
+
+2. micro-ROS Agent Connection:
+   - Verify computer's IP address is correct in `credentials.h`
+   - Ensure computer and ESP32 are on the same network
+   - Check if port 8888 is open:
+     ```bash
+     sudo ufw allow 8888/udp
+     ```
+
+3. No Data Publishing:
+   - Check HX711 wiring connections
+   - Verify load cell is properly connected
+   - Monitor serial output for error messages
+
+## Calibration
+
+The current code uses a default calibration factor of 1. To calibrate your load cell:
+
+1. Place a known weight on the load cell
+2. Adjust the `calibration_factor` variable until the output matches the known weight
+3. Update the `calibration_factor` in the code
+
+## Future Improvements
+
+- Add tare functionality through ROS2 service
+- Implement dynamic calibration
+- Add configuration parameters through ROS2 parameters
+- Create visualization tools for load cell data
+- Add data logging capabilities
+
+## License
+
+This project is released under the MIT License.
+
+## Contributing
+
+Feel free to submit issues and pull requests.
