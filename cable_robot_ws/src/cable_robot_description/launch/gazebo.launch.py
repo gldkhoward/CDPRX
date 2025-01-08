@@ -8,22 +8,28 @@ from launch.actions import IncludeLaunchDescription, ExecuteProcess, DeclareLaun
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
-import xacro
 
 def generate_launch_description():
-    # Get package directory
+    # Package Directories
     pkg_name = 'cable_robot_description'
     pkg_dir = get_package_share_directory(pkg_name)
-
-    # Specify paths
+    
+    # Gazebo
     gazebo_pkg_dir = get_package_share_directory('gazebo_ros')
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(gazebo_pkg_dir, 'launch', 'gazebo.launch.py')
+        ),
+        launch_arguments={
+            'pause': 'false',
+        }.items()
+    )
+
+    # URDF
     xacro_file = os.path.join(pkg_dir, 'urdf', 'cable_robot.urdf.xacro')
+    robot_description = Command(['xacro ', xacro_file])
 
-    # Create robot state publisher node
-    robot_description = Command([
-        'xacro ', xacro_file
-    ])
-
+    # Robot State Publisher
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -31,28 +37,28 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'robot_description': robot_description,
-            'use_sim_time': True
+            'use_sim_time': True,
+            'publish_frequency': 30.0,
         }]
     )
 
-    # Launch Gazebo
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(gazebo_pkg_dir, 'launch', 'gazebo.launch.py')
-        ])
-    )
-
-    # Spawn robot
+    # Spawn Entity
     spawn_entity = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description',
-                  '-entity', 'cable_robot'],
-        output='screen'
+        name='spawn_entity',
+        output='screen',
+        arguments=[
+            '-topic', '/robot_description',
+            '-entity', 'cable_robot',
+            '-x', '0.0',
+            '-y', '0.0',
+            '-z', '0.0'
+        ]
     )
 
     return LaunchDescription([
-        robot_state_publisher,
         gazebo,
+        robot_state_publisher,
         spawn_entity
     ])
