@@ -1,2 +1,0 @@
-Invoking command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description': /usr/bin/cmake --build /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description -- -j24 -l24
-Invoked command in '/home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description' returned '2': /usr/bin/cmake --build /home/luke/git/CDPRX/cable_robot_ws/src/cable_robot_description/build/cable_robot_description -- -j24 -l24

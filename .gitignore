@@ -1,0 +1,55 @@
+# ROS2 build and install directories
+**/build/
+**/install/
+**/log/
+
+# Python artifacts
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build artifacts
+*.o
+*.cmake
+*.make
+**/CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ROS specific
+*.pyc
+.catkin_workspace
+COLCON_IGNORE
+AMENT_IGNORE
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Environment files
+.env
+*.env
+.env.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
