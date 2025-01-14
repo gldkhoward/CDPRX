@@ -1,0 +1,392 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="cdpr">
+    <!-- Platform (Root Link) -->
+    <link name="platform">
+      <pose>0 0 2 0 0 0</pose>
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <iyy>1</iyy>
+          <izz>1</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="platform_collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.05</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="platform_visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.05</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0 0.5 0 1</ambient>
+          <diffuse>0 0.5 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Fixed Pillars -->
+    <link name="pillar_1">
+      <pose>1.5 1.5 1.5 0 0 0</pose>
+      <inertial>
+        <mass>1e6</mass>
+        <inertia>
+          <ixx>1e6</ixx>
+          <iyy>1e6</iyy>
+          <izz>1e6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="pillar_1_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="pillar_1_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Repeat for other pillars with different poses -->
+    <link name="pillar_2">
+      <pose>-1.5 1.5 1.5 0 0 0</pose>
+      <inertial>
+        <mass>1e6</mass>
+        <inertia>
+          <ixx>1e6</ixx>
+          <iyy>1e6</iyy>
+          <izz>1e6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="pillar_2_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="pillar_2_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+        </material>
+      </visual>
+    </link>
+    <link name="pillar_3">
+      <pose>-1.5 -1.5 1.5 0 0 0</pose>
+      <inertial>
+        <mass>1e6</mass>
+        <inertia>
+          <ixx>1e6</ixx>
+          <iyy>1e6</iyy>
+          <izz>1e6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="pillar_3_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="pillar_3_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+        </material>
+      </visual>
+    </link>
+    <link name="pillar_4">
+      <pose>1.5 -1.5 1.5 0 0 0</pose>
+      <inertial>
+        <mass>1e6</mass>
+        <inertia>
+          <ixx>1e6</ixx>
+          <iyy>1e6</iyy>
+          <izz>1e6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <collision name="pillar_4_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="pillar_4_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.05</radius>
+            <length>3.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Cable Systems -->
+    <!-- Cable 1 -->
+    <link name="cable_1">
+      <pose relative_to="platform">0.2 0.2 0 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="cable_1_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>1.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="cable_1_prismatic" type="prismatic">
+      <parent>platform</parent>
+      <child>cable_1</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5.0</upper>
+          <effort>1000</effort>
+          <velocity>1.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- Repeat for other cables with appropriate poses -->
+    <link name="cable_2">
+      <pose relative_to="platform">0.2 -0.2 0 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="cable_2_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>1.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="cable_2_prismatic" type="prismatic">
+      <parent>platform</parent>
+      <child>cable_2</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5.0</upper>
+          <effort>1000</effort>
+          <velocity>1.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <link name="cable_3">
+      <pose relative_to="platform">-0.2 0.2 0 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="cable_3_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>1.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="cable_3_prismatic" type="prismatic">
+      <parent>platform</parent>
+      <child>cable_3</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5.0</upper>
+          <effort>1000</effort>
+          <velocity>1.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <link name="cable_4">
+      <pose relative_to="platform">-0.2 -0.2 0 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="cable_4_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>1.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="cable_4_prismatic" type="prismatic">
+      <parent>platform</parent>
+      <child>cable_4</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5.0</upper>
+          <effort>1000</effort>
+          <velocity>1.0</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- Joint State Publisher Plugin -->
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <robotNamespace>cdpr</robotNamespace>
+      <jointName>cable_1_prismatic, cable_2_prismatic, cable_3_prismatic, cable_4_prismatic</jointName>
+      <updateRate>50</updateRate>
+    </plugin>
+
+    <!-- Static Constraints for Pillars -->
+    <joint name="pillar_1_fixed" type="fixed">
+      <parent>world</parent>
+      <child>pillar_1</child>
+    </joint>
+    <joint name="pillar_2_fixed" type="fixed">
+      <parent>world</parent>
+      <child>pillar_2</child>
+    </joint>
+    <joint name="pillar_3_fixed" type="fixed">
+      <parent>world</parent>
+      <child>pillar_3</child>
+    </joint>
+    <joint name="pillar_4_fixed" type="fixed">
+      <parent>world</parent>
+      <child>pillar_4</child>
+    </joint>
+
+  </model>
+</sdf>

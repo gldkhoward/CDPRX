@@ -17,34 +17,139 @@
     <xacro:property name="cable_max_tension" value="1000.0"/>
     <xacro:property name="cable_max_velocity" value="1.0"/>
 
-    <!-- Base Link -->
-    <link name="base_link">
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.1 0.1 0.001"/>
-            </geometry>
-            <material name="base_material">
-                <color rgba="0.5 0.5 0.5 1"/>
-            </material>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <box size="0.1 0.1 0.001"/>
-            </geometry>
-        </collision>
+    <!-- World link -->
+    <link name="world"/>
+
+    <!-- Base link with dummy link to handle KDL -->
+    <link name="dummy_base">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="0.001" ixy="0" ixz="0" 
-                     iyy="0.001" iyz="0" 
-                     izz="0.001"/>
+            <mass value="0.0001"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" 
+                     iyy="0.0001" iyz="0" 
+                     izz="0.0001"/>
         </inertial>
     </link>
 
-    <!-- Frame -->
-    <xacro:complete_frame parent="base_link">
+    <joint name="world_to_dummy" type="fixed">
+        <parent link="world"/>
+        <child link="dummy_base"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="base_link"/>
+
+    <joint name="dummy_to_base" type="fixed">
+        <parent link="dummy_base"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Modular frame -->
+    <xacro:modular_frame parent="base_link">
         <origin xyz="0 0 0.05" rpy="0 0 0"/>
-    </xacro:complete_frame>
+    </xacro:modular_frame>
+
+    <!-- Independent pillars -->
+    <xacro:modular_pillar name="pillar_front_right" 
+                          parent="base_link"
+                          position_x="${frame_length/2}"
+                          position_y="${frame_width/2}"
+                          height="${frame_height}"
+                          outlet_height="${frame_height * 0.8}"/>
+
+    <xacro:modular_pillar name="pillar_front_left"
+                          parent="base_link"
+                          position_x="${frame_length/2}"
+                          position_y="${-frame_width/2}"
+                          height="${frame_height}"
+                          outlet_height="${frame_height * 0.8}"/>
+
+    <xacro:modular_pillar name="pillar_back_right"
+                          parent="base_link"
+                          position_x="${-frame_length/2}"
+                          position_y="${frame_width/2}"
+                          height="${frame_height}"
+                          outlet_height="${frame_height * 0.8}"/>
+
+    <xacro:modular_pillar name="pillar_back_left"
+                          parent="base_link"
+                          position_x="${-frame_length/2}"
+                          position_y="${-frame_width/2}"
+                          height="${frame_height}"
+                          outlet_height="${frame_height * 0.8}"/>
+
+    <!-- Winch systems -->
+    <xacro:modular_winch name="winch_fr" 
+                         parent="pillar_front_right_outlet_mount"
+                         drum_radius="${drum_radius}"
+                         drum_length="${drum_length}"
+                         gear_ratio="${winch_gear_ratio}">
+        <origin xyz="0.1 0 0" rpy="0 ${pi/2} 0"/>
+    </xacro:modular_winch>
+
+    <xacro:modular_winch name="winch_fl"
+                         parent="pillar_front_left_outlet_mount"
+                         drum_radius="${drum_radius}"
+                         drum_length="${drum_length}"
+                         gear_ratio="${winch_gear_ratio}">
+        <origin xyz="0.1 0 0" rpy="0 ${pi/2} 0"/>
+    </xacro:modular_winch>
+
+    <xacro:modular_winch name="winch_br"
+                         parent="pillar_back_right_outlet_mount"
+                         drum_radius="${drum_radius}"
+                         drum_length="${drum_length}"
+                         gear_ratio="${winch_gear_ratio}">
+        <origin xyz="-0.1 0 0" rpy="0 ${pi/2} ${pi}"/>
+    </xacro:modular_winch>
+
+    <xacro:modular_winch name="winch_bl"
+                         parent="pillar_back_left_outlet_mount"
+                         drum_radius="${drum_radius}"
+                         drum_length="${drum_length}"
+                         gear_ratio="${winch_gear_ratio}">
+        <origin xyz="-0.1 0 0" rpy="0 ${pi/2} ${pi}"/>
+    </xacro:modular_winch>
+
+    <!-- Cable systems -->
+    <xacro:modular_cable name="cable_fr"
+                        parent_mount="winch_fr_output_mount"
+                        child_mount="platform_base"
+                        radius="${cable_radius}"
+                        max_length="${cable_max_length}"
+                        max_tension="${cable_max_tension}"
+                        max_velocity="${cable_max_velocity}"/>
+
+    <xacro:modular_cable name="cable_fl"
+                        parent_mount="winch_fl_output_mount"
+                        child_mount="platform_base"
+                        radius="${cable_radius}"
+                        max_length="${cable_max_length}"
+                        max_tension="${cable_max_tension}"
+                        max_velocity="${cable_max_velocity}"/>
+
+    <xacro:modular_cable name="cable_br"
+                        parent_mount="winch_br_output_mount"
+                        child_mount="platform_base"
+                        radius="${cable_radius}"
+                        max_length="${cable_max_length}"
+                        max_tension="${cable_max_tension}"
+                        max_velocity="${cable_max_velocity}"/>
+
+    <xacro:modular_cable name="cable_bl"
+                        parent_mount="winch_bl_output_mount"
+                        child_mount="platform_base"
+                        radius="${cable_radius}"
+                        max_length="${cable_max_length}"
+                        max_tension="${cable_max_tension}"
+                        max_velocity="${cable_max_velocity}"/>
+
+    <!-- Gazebo plugin for the platform -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/cable_robot</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
 </robot>

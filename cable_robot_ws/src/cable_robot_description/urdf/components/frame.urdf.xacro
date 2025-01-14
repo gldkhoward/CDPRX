@@ -1,10 +1,141 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Include the pillar macro -->
-    <xacro:include filename="$(find cable_robot_description)/urdf/components/frame_pillar.urdf.xacro"/>
+    <!-- Include necessary components -->
+    <xacro:include filename="$(find cable_robot_description)/urdf/components/platform.urdf.xacro"/>
     
-    <!-- Complete frame macro -->
-    <xacro:macro name="complete_frame" params="parent *origin">
+    <!-- Joint helper macros -->
+    <xacro:macro name="prismatic_joint_link" params="name parent axis">
+        <joint name="platform_${name}" type="prismatic">
+            <parent link="${parent}"/>
+            <child link="platform_${name}"/>
+            <axis xyz="${axis}"/>
+            <limit lower="-${frame_length}" upper="${frame_length}" effort="1000" velocity="1.0"/>
+        </joint>
+
+        <link name="platform_${name}">
+            <inertial>
+                <mass value="0.1"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" 
+                         iyy="0.001" iyz="0" 
+                         izz="0.001"/>
+            </inertial>
+        </link>
+    </xacro:macro>
+
+    <xacro:macro name="revolute_joint_link" params="name parent axis">
+        <joint name="platform_${name}" type="revolute">
+            <parent link="${parent}"/>
+            <child link="platform_${name}"/>
+            <axis xyz="${axis}"/>
+            <limit lower="-${pi}" upper="${pi}" effort="1000" velocity="1.0"/>
+        </joint>
+
+        <link name="platform_${name}">
+            <inertial>
+                <mass value="0.1"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" 
+                         iyy="0.001" iyz="0" 
+                         izz="0.001"/>
+            </inertial>
+        </link>
+    </xacro:macro>
+
+    <!-- Mounting point macro -->
+    <xacro:macro name="cable_mount" params="name parent *origin">
+        <link name="${name}_mount">
+            <visual>
+                <geometry>
+                    <cylinder radius="0.01" length="0.02"/>
+                </geometry>
+                <material name="mount_material">
+                    <color rgba="0.8 0.8 0.8 1"/>
+                </material>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="0.01" length="0.02"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.05"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" 
+                         iyy="0.001" iyz="0" 
+                         izz="0.001"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_mount_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_mount"/>
+            <xacro:insert_block name="origin"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Individual pillar macro with cable outlet -->
+    <xacro:macro name="modular_pillar" params="name parent position_x position_y height outlet_height">
+        <!-- Pillar base -->
+        <link name="${name}_base">
+            <visual>
+                <geometry>
+                    <box size="0.1 0.1 0.05"/>
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="0.1 0.1 0.05"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="1.0"/>
+                <inertia ixx="0.01" ixy="0" ixz="0" 
+                         iyy="0.01" iyz="0" 
+                         izz="0.01"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_base_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_base"/>
+            <origin xyz="${position_x} ${position_y} 0" rpy="0 0 0"/>
+        </joint>
+
+        <!-- Pillar column -->
+        <link name="${name}_column">
+            <visual>
+                <geometry>
+                    <cylinder radius="0.05" length="${height}"/>
+                </geometry>
+                <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="0.05" length="${height}"/>
+                </geometry>
+                <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+            </collision>
+            <inertial>
+                <mass value="2.0"/>
+                <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+                <inertia ixx="0.1" ixy="0" ixz="0" 
+                         iyy="0.1" iyz="0" 
+                         izz="0.01"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_column_joint" type="fixed">
+            <parent link="${name}_base"/>
+            <child link="${name}_column"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <!-- Cable outlet -->
+        <xacro:cable_mount name="${name}_outlet" parent="${name}_column">
+            <origin xyz="0 0 ${outlet_height}" rpy="0 0 0"/>
+        </xacro:cable_mount>
+    </xacro:macro>
+
+    <!-- Frame assembly macro -->
+    <xacro:macro name="modular_frame" params="parent *origin">
         <!-- Frame center reference -->
         <link name="frame_center">
             <visual>
@@ -12,6 +143,12 @@
                     <sphere radius="0.01"/>
                 </geometry>
             </visual>
+            <inertial>
+                <mass value="0.1"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" 
+                         iyy="0.001" iyz="0" 
+                         izz="0.001"/>
+            </inertial>
         </link>
 
         <joint name="frame_center_joint" type="fixed">
@@ -20,46 +157,48 @@
             <xacro:insert_block name="origin"/>
         </joint>
 
-        <!-- Define outlet configurations for each pillar -->
-        <!-- Front right pillar -->
-        <xacro:property name="fr_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
+        <!-- Platform with 6-DOF joints -->
+        <xacro:platform_6dof parent="frame_center"/>
+    </xacro:macro>
 
-        <!-- Front left pillar -->
-        <xacro:property name="fl_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
+    <!-- Platform 6-DOF joints macro -->
+    <xacro:macro name="platform_6dof" params="parent">
+        <!-- Create intermediate links and joints for 6-DOF movement -->
+        <xacro:create_platform_chain parent="${parent}"/>
+        
+        <!-- Add the end-effector platform -->
+        <xacro:end_effector_platform parent="platform_base">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:end_effector_platform>
+    </xacro:macro>
 
-        <!-- Back right pillar -->
-        <xacro:property name="br_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
+    <!-- Helper macro to create the 6-DOF joint chain -->
+    <xacro:macro name="create_platform_chain" params="parent">
+        <!-- Same implementation as your original 6-DOF chain,
+             but now in a separate macro for better modularity -->
+        <link name="platform_base">
+            <inertial>
+                <mass value="1.0"/>
+                <inertia ixx="0.1" ixy="0" ixz="0" 
+                         iyy="0.1" iyz="0" 
+                         izz="0.1"/>
+            </inertial>
+        </link>
 
-        <!-- Back left pillar -->
-        <xacro:property name="bl_heights" value="${[frame_height * 0.8, frame_height * 0.6]}"/>
+        <!-- X, Y, Z prismatic joints -->
+        <xacro:prismatic_joint_link name="x" parent="${parent}" axis="1 0 0"/>
+        <xacro:prismatic_joint_link name="y" parent="platform_x" axis="0 1 0"/>
+        <xacro:prismatic_joint_link name="z" parent="platform_y" axis="0 0 1"/>
 
-        <!-- Create four pillars -->
-        <xacro:frame_pillar prefix="pillar_front_right" 
-                           parent="frame_center" 
-                           position_x="${frame_length/2}" 
-                           position_y="${frame_width/2}"
-                           height="${frame_height}"
-                           outlet_heights="${fr_heights}"/>
-
-        <xacro:frame_pillar prefix="pillar_front_left" 
-                           parent="frame_center"
-                           position_x="${frame_length/2}" 
-                           position_y="${-frame_width/2}"
-                           height="${frame_height}"
-                           outlet_heights="${fl_heights}"/>
-
-        <xacro:frame_pillar prefix="pillar_back_right" 
-                           parent="frame_center"
-                           position_x="${-frame_length/2}" 
-                           position_y="${frame_width/2}"
-                           height="${frame_height}"
-                           outlet_heights="${br_heights}"/>
-
-        <xacro:frame_pillar prefix="pillar_back_left" 
-                           parent="frame_center"
-                           position_x="${-frame_length/2}" 
-                           position_y="${-frame_width/2}"
-                           height="${frame_height}"
-                           outlet_heights="${bl_heights}"/>
+        <!-- Roll, Pitch, Yaw revolute joints -->
+        <xacro:revolute_joint_link name="roll" parent="platform_z" axis="1 0 0"/>
+        <xacro:revolute_joint_link name="pitch" parent="platform_roll" axis="0 1 0"/>
+        
+        <joint name="platform_yaw" type="revolute">
+            <parent link="platform_pitch"/>
+            <child link="platform_base"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="-${pi}" upper="${pi}" effort="1000" velocity="1.0"/>
+        </joint>
     </xacro:macro>
 </robot>

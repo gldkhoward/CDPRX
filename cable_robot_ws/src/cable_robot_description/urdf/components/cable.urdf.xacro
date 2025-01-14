@@ -1,70 +1,61 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Cable macro for CDPR -->
-    <xacro:macro name="cable_macro" params="prefix parent child base_point:='0 0 0' platform_point:='0 0 0'">
-        <!-- Virtual link for cable -->
-        <link name="${prefix}_link">
+    <!-- Modular cable system macro -->
+    <xacro:macro name="modular_cable" params="name parent_mount child_mount radius max_length max_tension max_velocity">
+        <!-- Cable link -->
+        <link name="${name}_link">
             <visual>
                 <geometry>
-                    <cylinder radius="${cable_radius}" length="${cable_max_length}"/>
+                    <cylinder radius="${radius}" length="0.1"/>
                 </geometry>
                 <material name="cable_material">
-                    <color rgba="0.8 0.8 0.8 1"/>
+                    <color rgba="0.1 0.1 0.1 1"/>
                 </material>
             </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${radius}" length="0.1"/>
+                </geometry>
+            </collision>
             <inertial>
-                <!-- Near-zero mass for cable -->
-                <mass value="0.001"/>
-                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+                <mass value="0.1"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" 
+                         iyy="0.001" iyz="0" 
+                         izz="0.001"/>
             </inertial>
         </link>
 
-        <!-- Universal joint at base -->
-        <joint name="${prefix}_base_joint" type="universal">
-            <parent link="${parent}"/>
-            <child link="${prefix}_link"/>
-            <origin xyz="${base_point}" rpy="0 0 0"/>
-            <axis xyz="1 0 0"/>
-            <axis2 xyz="0 1 0"/>
-            <dynamics damping="0.1" friction="0.1"/>
-        </joint>
-
-        <!-- Prismatic joint for cable extension -->
-        <joint name="${prefix}_extension" type="prismatic">
-            <parent link="${prefix}_link"/>
-            <child link="${prefix}_end_link"/>
+        <!-- Cable attachment joints -->
+        <joint name="${name}_winch_joint" type="fixed">
+            <parent link="${parent_mount}"/>
+            <child link="${name}_link"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <axis xyz="0 0 1"/>
-            <limit lower="0" upper="${cable_max_length}" 
-                   effort="${cable_max_tension}" velocity="${cable_max_velocity}"/>
-            <dynamics damping="0.1" friction="0.1"/>
         </joint>
 
-        <!-- Virtual end link -->
-        <link name="${prefix}_end_link">
-            <inertial>
-                <mass value="0.001"/>
-                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-            </inertial>
-        </link>
-
-        <!-- Spherical joint at platform -->
-        <joint name="${prefix}_platform_joint" type="spherical">
-            <parent link="${prefix}_end_link"/>
-            <child link="${child}"/>
-            <origin xyz="${platform_point}" rpy="0 0 0"/>
-            <dynamics damping="0.1" friction="0.1"/>
+        <joint name="${name}_platform_joint" type="fixed">
+            <parent link="${name}_link"/>
+            <child link="${child_mount}"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
         </joint>
 
-        <!-- Add transmission for actuation -->
-        <transmission name="${prefix}_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${prefix}_extension">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${prefix}_motor">
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
+        <!-- Gazebo-specific properties -->
+        <gazebo reference="${name}_link">
+            <material>Gazebo/Black</material>
+            <mu1>0.5</mu1>
+            <mu2>0.5</mu2>
+        </gazebo>
+
+        <!-- Cable plugin -->
+        <gazebo>
+            <plugin name="${name}_plugin" filename="libgazebo_ros_cable.so">
+                <robotNamespace>/cable_robot</robotNamespace>
+                <linkName>${name}_link</linkName>
+                <winchJointName>${name}_winch_joint</winchJointName>
+                <platformJointName>${name}_platform_joint</platformJointName>
+                <maxLength>${max_length}</maxLength>
+                <maxTension>${max_tension}</maxTension>
+                <maxVelocity>${max_velocity}</maxVelocity>
+            </plugin>
+        </gazebo>
     </xacro:macro>
 </robot>

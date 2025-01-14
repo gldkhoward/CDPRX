@@ -1,4 +1,3 @@
 #!/bin/bash
-cd ..
-colcon build
-source install/setup.bash
+# Script to set up the development workspace
+# TODO: Add script implementation

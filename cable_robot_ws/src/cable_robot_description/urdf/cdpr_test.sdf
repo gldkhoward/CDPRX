@@ -1,0 +1,228 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="cdpr">
+    <plugin
+      filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+    </plugin>
+
+    <!-- Base frame - single parallelpiped cuboid with nearly infinite mass -->
+    <link name="base_link">
+      <pose>0 0 1.5 0 0 0</pose>
+      <inertial>
+        <mass>1e6</mass>
+        <inertia>
+          <ixx>1e6</ixx>
+          <iyy>1e6</iyy>
+          <izz>1e6</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>3.0 3.0 3.0</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.7 0.7 0.7 0.3</ambient>
+          <diffuse>0.7 0.7 0.7 0.3</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Platform - with attachment points at vertices -->
+    <link name="platform">
+      <pose>0 0 2 0 0 0</pose>
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.1</ixx>
+          <iyy>0.1</iyy>
+          <izz>0.1</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.05</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0 0.8 0 1</ambient>
+          <diffuse>0 0.8 0 1</diffuse>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.4 0.05</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Virtual links for U-P-S chains -->
+    <!-- Cable 1 virtual links -->
+    <link name="cable1_base">
+      <pose>1.5 1.5 3 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.01</radius>
+            <length>5.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.8 0.8 0.8 1</ambient>
+          <diffuse>0.8 0.8 0.8 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <link name="cable1_prismatic">
+      <pose>1.5 1.5 2.5 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Repeating for cables 2-4 with different positions -->
+    <!-- Cable 2 virtual links -->
+    <link name="cable2_base">
+      <pose>-1.5 1.5 3 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.01</radius>
+            <length>5.0</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.8 0.8 0.8 1</ambient>
+          <diffuse>0.8 0.8 0.8 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <link name="cable2_prismatic">
+      <pose>-1.5 1.5 2.5 0 0 0</pose>
+      <inertial>
+        <mass>1e-6</mass>
+        <inertia>
+          <ixx>1e-6</ixx>
+          <iyy>1e-6</iyy>
+          <izz>1e-6</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Cable base attachments -->
+    <joint name="cable1_base_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>cable1_base</child>
+    </joint>
+
+    <joint name="cable2_base_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>cable2_base</child>
+    </joint>
+
+    <!-- U-P-S Joint Chain for Cable 1 -->
+    <joint name="cable1_universal" type="universal">
+      <parent>cable1_base</parent>
+      <child>cable1_prismatic</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <dynamics>
+          <damping>0.1</damping>
+        </dynamics>
+      </axis>
+      <axis2>
+        <xyz>0 1 0</xyz>
+        <dynamics>
+          <damping>0.1</damping>
+        </dynamics>
+      </axis2>
+    </joint>
+
+    <joint name="cable1_prisma" type="prismatic">
+      <parent>cable1_prismatic</parent>
+      <child>platform</child>
+      <pose>0.2 0.2 0 0 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5</upper>
+          <effort>1000</effort>
+          <velocity>1</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <!-- U-P-S Joint Chain for Cable 2 -->
+    <joint name="cable2_universal" type="universal">
+      <parent>cable2_base</parent>
+      <child>cable2_prismatic</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <dynamics>
+          <damping>0.1</damping>
+        </dynamics>
+      </axis>
+      <axis2>
+        <xyz>0 1 0</xyz>
+        <dynamics>
+          <damping>0.1</damping>
+        </dynamics>
+      </axis2>
+    </joint>
+
+    <joint name="cable2_prisma" type="prismatic">
+      <parent>cable2_prismatic</parent>
+      <child>platform</child>
+      <pose>-0.2 0.2 0 0 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>5</upper>
+          <effort>1000</effort>
+          <velocity>1</velocity>
+        </limit>
+        <dynamics>
+          <damping>1.0</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>100</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+
+  </model>
+</sdf>

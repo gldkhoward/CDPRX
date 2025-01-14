@@ -1,0 +1,315 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cdpr">
+    <!-- Properties remain the same -->
+    <xacro:property name="frame_size" value="2.0"/>
+    <xacro:property name="frame_height" value="2.0"/>
+    <xacro:property name="pillar_radius" value="0.05"/>
+    <xacro:property name="platform_width" value="0.4"/>
+    <xacro:property name="platform_length" value="0.4"/>
+    <xacro:property name="platform_height" value="0.1"/>
+    <xacro:property name="platform_mass" value="1.0"/>
+    <xacro:property name="cable_radius" value="0.1"/>
+    <xacro:property name="cable_mass" value="0.1"/>
+    <xacro:property name="cable_damping" value="1.0"/>
+
+    <!-- Colors -->
+    <material name="gray"><color rgba="0.7 0.7 0.7 1"/></material>
+    <material name="red"><color rgba="0.8 0.0 0.0 1"/></material>
+    <material name="blue"><color rgba="0.0 0.0 0.8 1"/></material>
+
+    <!-- Base world link -->
+    <link name="world"/>
+
+    <!-- Static base link -->
+    <link name="static_base">
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="1" iyy="1" izz="1" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="world_to_static" type="fixed">
+        <parent link="world"/>
+        <child link="static_base"/>
+    </joint>
+
+    <!-- Frame base -->
+    <link name="frame_base">
+        <visual>
+            <geometry>
+                <box size="${frame_size} ${frame_size} 0.01"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${frame_size} ${frame_size} 0.01"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.083" iyy="0.083" izz="0.166" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <!-- Connect frame base to static base -->
+    <joint name="base_joint" type="fixed">
+        <parent link="static_base"/>
+        <child link="frame_base"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Platform slider mechanism -->
+    <link name="platform_x_slider">
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="platform_x_joint" type="prismatic">
+        <parent link="frame_base"/>
+        <child link="platform_x_slider"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="${-frame_size/2}" upper="${frame_size/2}" effort="1000" velocity="1000"/>
+        <origin xyz="0 0 ${frame_height/2}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="platform_y_slider">
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="platform_y_joint" type="prismatic">
+        <parent link="platform_x_slider"/>
+        <child link="platform_y_slider"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${-frame_size/2}" upper="${frame_size/2}" effort="1000" velocity="1000"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="platform_z_slider">
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="platform_z_joint" type="prismatic">
+        <parent link="platform_y_slider"/>
+        <child link="platform_z_slider"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="0" upper="${frame_height}" effort="1000" velocity="1000"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Platform -->
+    <link name="platform">
+        <visual>
+            <geometry>
+                <box size="${platform_width} ${platform_length} ${platform_height}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${platform_width} ${platform_length} ${platform_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${platform_mass}"/>
+            <inertia 
+                ixx="${platform_mass * (platform_length*platform_length + platform_height*platform_height) / 12.0}"
+                iyy="${platform_mass * (platform_width*platform_width + platform_height*platform_height) / 12.0}"
+                izz="${platform_mass * (platform_width*platform_width + platform_length*platform_length) / 12.0}"
+                ixy="0.0" ixz="0.0" iyz="0.0"/>
+        </inertial>
+    </link>
+
+    <joint name="platform_orientation" type="fixed">
+        <parent link="platform_z_slider"/>
+        <child link="platform"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Gazebo tags for pillars -->
+    <xacro:macro name="pillar_gazebo" params="name">
+        <gazebo reference="${name}">
+            <static>true</static>
+            <self_collide>false</self_collide>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- Frame pillars macro -->
+    <xacro:macro name="create_pillar" params="name x y">
+        <link name="${name}">
+            <visual>
+                <geometry>
+                    <cylinder radius="${pillar_radius}" length="${frame_height}"/>
+                </geometry>
+                <material name="gray"/>
+                <origin xyz="0 0 ${frame_height/2}"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${pillar_radius}" length="${frame_height}"/>
+                </geometry>
+                <origin xyz="0 0 ${frame_height/2}"/>
+            </collision>
+            <inertial>
+                <mass value="1.0"/>
+                <inertia ixx="0.145833" iyy="0.145833" izz="0.125" ixy="0" ixz="0" iyz="0"/>
+                <origin xyz="0 0 ${frame_height/2}"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_joint" type="fixed">
+            <parent link="frame_base"/>
+            <child link="${name}"/>
+            <origin xyz="${x} ${y} 0"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Cable assembly macro -->
+    <xacro:macro name="create_cable" params="name parent_link mount_x mount_y mount_z">
+        <link name="${name}_mount">
+            <visual>
+                <geometry>
+                    <sphere radius="${cable_radius*2}"/>
+                </geometry>
+                <material name="blue"/>
+            </visual>
+            <inertial>
+                <mass value="0.01"/>
+                <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0" ixz="0" iyz="0"/>
+            </inertial>
+        </link>
+
+        <link name="${name}_cable">
+            <visual>
+                <geometry>
+                    <cylinder radius="${cable_radius}" length="0.5"/>
+                </geometry>
+                <material name="blue"/>
+            </visual>
+            <inertial>
+                <mass value="${cable_mass}"/>
+                <inertia 
+                    ixx="${cable_mass * 0.01}"
+                    iyy="${cable_mass * 0.01}"
+                    izz="${cable_mass * 0.001}"
+                    ixy="0" ixz="0" iyz="0"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_mount_joint" type="fixed">
+            <parent link="${parent_link}"/>
+            <child link="${name}_mount"/>
+            <origin xyz="${mount_x} ${mount_y} ${mount_z}"/>
+        </joint>
+
+        <joint name="${name}_cable_joint" type="revolute">
+            <parent link="${name}_mount"/>
+            <child link="${name}_cable"/>
+            <axis xyz="1 0 0"/>
+            <limit lower="${-pi}" upper="${pi}" effort="1000" velocity="1000"/>
+            <dynamics damping="${cable_damping}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Create frame -->
+    <xacro:create_pillar name="pillar_1" x="${frame_size/2}" y="${frame_size/2}"/>
+    <xacro:create_pillar name="pillar_2" x="${frame_size/2}" y="${-frame_size/2}"/>
+    <xacro:create_pillar name="pillar_3" x="${-frame_size/2}" y="${frame_size/2}"/>
+    <xacro:create_pillar name="pillar_4" x="${-frame_size/2}" y="${-frame_size/2}"/>
+
+    <!-- Create cables -->
+    <xacro:create_cable name="cable1" 
+        parent_link="pillar_1" 
+        mount_x="0" mount_y="0" mount_z="${frame_height}"/>
+
+    <xacro:create_cable name="cable2"
+        parent_link="pillar_2"
+        mount_x="0" mount_y="0" mount_z="${frame_height}"/>
+
+    <xacro:create_cable name="cable3"
+        parent_link="pillar_3"
+        mount_x="0" mount_y="0" mount_z="${frame_height}"/>
+
+    <xacro:create_cable name="cable4"
+        parent_link="pillar_4"
+        mount_x="0" mount_y="0" mount_z="${frame_height}"/>
+
+    <!-- Gazebo-specific properties -->
+    <gazebo reference="world">
+        <static>true</static>
+    </gazebo>
+
+    <gazebo reference="static_base">
+        <static>true</static>
+    </gazebo>
+
+    <gazebo reference="frame_base">
+        <static>true</static>
+        <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="platform">
+        <material>Gazebo/Red</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>false</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <!-- Physics properties for sliders -->
+    <gazebo reference="platform_x_slider">
+        <self_collide>false</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <gazebo reference="platform_y_slider">
+        <self_collide>false</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <gazebo reference="platform_z_slider">
+        <self_collide>false</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <!-- Gazebo plugins -->
+    <gazebo>
+        <plugin filename="gz-sim-joint-state-publisher-system"
+                name="gz::sim::systems::JointStatePublisher">
+            <joint_name>platform_x_joint</joint_name>
+            <joint_name>platform_y_joint</joint_name>
+            <joint_name>platform_z_joint</joint_name>
+            <joint_name>cable1_cable_joint</joint_name>
+            <joint_name>cable2_cable_joint</joint_name>
+            <joint_name>cable3_cable_joint</joint_name>
+            <joint_name>cable4_cable_joint</joint_name>
+        </plugin>
+        
+        <plugin filename="gz-sim-physics-system"
+                name="gz::sim::systems::Physics">
+            <engine>dart</engine>
+            <dart>
+                <solver>
+                    <solver_type>dantzig</solver_type>
+                </solver>
+            </dart>
+            <update_rate>1000</update_rate>
+        </plugin>
+    </gazebo>
+
+    <!-- Material properties -->
+    <gazebo reference="platform">
+        <material>Gazebo/Red</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+    </gazebo>
+
+</robot>

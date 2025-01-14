@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="pillar_base_length" value="0.3"/>
+    <xacro:property name="pillar_base_width" value="0.3"/>
+    <xacro:property name="pillar_base_height" value="0.1"/>
+    <xacro:property name="pillar_width" value="0.1"/>
+    <xacro:property name="pillar_length" value="0.1"/>
+    <xacro:property name="base_mass" value="5.0"/>
+    <xacro:property name="pillar_mass" value="3.0"/>
+    <xacro:property name="outlet_radius" value="0.02"/>
+    <xacro:property name="outlet_offset" value="0.02"/>
+    
+    <!-- Calculated inertia properties -->
+    <xacro:property name="base_ixx" value="${(base_mass/12.0) * (pillar_base_width*pillar_base_width + pillar_base_height*pillar_base_height)}"/>
+    <xacro:property name="base_iyy" value="${(base_mass/12.0) * (pillar_base_length*pillar_base_length + pillar_base_height*pillar_base_height)}"/>
+    <xacro:property name="pillar_ixx" value="${(pillar_mass/12.0) * (pillar_length*pillar_length)}"/>
+    <xacro:property name="pillar_iyy" value="${(pillar_mass/12.0) * (pillar_width*pillar_width)}"/>
+</robot>

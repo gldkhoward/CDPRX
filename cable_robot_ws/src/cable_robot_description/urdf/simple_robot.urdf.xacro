@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cable_robot">
+    <!-- Frame dimensions -->
+    <xacro:property name="frame_size" value="2.0"/>      <!-- Size of square frame -->
+    <xacro:property name="frame_height" value="2.0"/>    <!-- Height of frame -->
+    <xacro:property name="pillar_radius" value="0.05"/>  <!-- Radius of frame pillars -->
+    <xacro:property name="pillar_mass" value="5.0"/>     <!-- Mass of each pillar -->
+    
+    <!-- Platform dimensions -->
+    <xacro:property name="platform_width" value="0.4"/>
+    <xacro:property name="platform_length" value="0.4"/>
+    <xacro:property name="platform_height" value="0.1"/>
+    <xacro:property name="platform_mass" value="1.0"/>
+
+    <!-- Colors -->
+    <material name="gray">
+        <color rgba="0.7 0.7 0.7 1"/>
+    </material>
+    <material name="red">
+        <color rgba="0.8 0.0 0.0 1"/>
+    </material>
+
+    <!-- Base Link (World) -->
+    <link name="world"/>
+
+    <!-- Platform -->
+    <link name="platform">
+        <visual>
+            <geometry>
+                <box size="${platform_width} ${platform_length} ${platform_height}"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${platform_width} ${platform_length} ${platform_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${platform_mass}"/>
+            <inertia 
+                ixx="${platform_mass * (platform_length*platform_length + platform_height*platform_height) / 12.0}"
+                iyy="${platform_mass * (platform_width*platform_width + platform_height*platform_height) / 12.0}"
+                izz="${platform_mass * (platform_width*platform_width + platform_length*platform_length) / 12.0}"
+                ixy="0.0" ixz="0.0" iyz="0.0"/>
+        </inertial>
+    </link>
+
+    <!-- Frame pillars (fixed to world) -->
+    <xacro:macro name="create_pillar" params="name x y">
+        <link name="${name}">
+            <visual>
+                <geometry>
+                    <cylinder radius="${pillar_radius}" length="${frame_height}"/>
+                </geometry>
+                <material name="gray"/>
+                <origin xyz="0 0 ${frame_height/2}"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${pillar_radius}" length="${frame_height}"/>
+                </geometry>
+                <origin xyz="0 0 ${frame_height/2}"/>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 ${frame_height/2}" rpy="0 0 0"/>
+                <mass value="${pillar_mass}"/>
+                <inertia
+                    ixx="${(pillar_mass/12.0) * (3*pillar_radius*pillar_radius + frame_height*frame_height)}"
+                    iyy="${(pillar_mass/12.0) * (3*pillar_radius*pillar_radius + frame_height*frame_height)}"
+                    izz="${(pillar_mass/2.0) * (pillar_radius*pillar_radius)}"
+                    ixy="0.0" ixz="0.0" iyz="0.0"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_joint" type="fixed">
+            <parent link="world"/>
+            <child link="${name}"/>
+            <origin xyz="${x} ${y} 0"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Create the four pillars -->
+    <xacro:create_pillar name="pillar_1" x="${frame_size/2}" y="${frame_size/2}"/>
+    <xacro:create_pillar name="pillar_2" x="${frame_size/2}" y="${-frame_size/2}"/>
+    <xacro:create_pillar name="pillar_3" x="${-frame_size/2}" y="${frame_size/2}"/>
+    <xacro:create_pillar name="pillar_4" x="${-frame_size/2}" y="${-frame_size/2}"/>
+
+    <!-- Platform joint -->
+    <joint name="platform_joint" type="fixed">
+        <parent link="world"/>
+        <child link="platform"/>
+        <origin xyz="0 0 1.0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Gazebo-specific properties -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/cable_robot</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+            <legacyModeNS>true</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+    <!-- Material properties for Gazebo -->
+    <gazebo reference="platform">
+        <material>Gazebo/Red</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <gazebo reference="pillar_1">
+        <material>Gazebo/Gray</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <gazebo reference="pillar_2">
+        <material>Gazebo/Gray</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <gazebo reference="pillar_3">
+        <material>Gazebo/Gray</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+    <gazebo reference="pillar_4">
+        <material>Gazebo/Gray</material>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+</robot>

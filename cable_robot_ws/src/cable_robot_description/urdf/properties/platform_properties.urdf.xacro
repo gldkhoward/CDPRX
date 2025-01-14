@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Platform frame dimensions -->
+    <xacro:property name="platform_width" value="0.4"/>  <!-- X dimension -->
+    <xacro:property name="platform_length" value="0.4"/> <!-- Y dimension -->
+    <xacro:property name="platform_height" value="0.1"/> <!-- Z dimension -->
+
+    <!-- Square tube properties -->
+    <xacro:property name="tube_size" value="0.02"/>      <!-- Square tube outer width/height -->
+    <xacro:property name="tube_density" value="2700"/>   <!-- Aluminum density in kg/m^3 -->
+    
+    <!-- Calculate mass for a single tube based on length -->
+    <xacro:property name="tube_volume_per_meter" value="${tube_size * tube_size}"/>
+    <xacro:property name="tube_mass_per_meter" value="${tube_density * tube_volume_per_meter}"/>
+
+    <!-- Cable attachment properties -->
+    <xacro:property name="cable_mount_radius" value="0.01"/>
+    <xacro:property name="cable_mount_mass" value="0.05"/>
+
+    <!-- Colors -->
+    <material name="platform_color">
+        <color rgba="0.8 0.8 0.8 1"/>
+    </material>
+    
+    <material name="mount_color">
+        <color rgba="0.3 0.3 0.3 1"/>
+    </material>
+</robot>

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Winch system macro -->
-    <xacro:macro name="winch" params="prefix parent *origin">
+    <!-- Modular winch system macro -->
+    <xacro:macro name="modular_winch" params="name parent drum_radius drum_length gear_ratio *origin">
         <!-- Motor housing -->
-        <link name="${prefix}_housing">
+        <link name="${name}_housing">
             <visual>
                 <geometry>
                     <box size="0.2 0.2 0.2"/>
@@ -25,14 +25,14 @@
         </link>
 
         <!-- Mount motor to parent -->
-        <joint name="${prefix}_mount" type="fixed">
+        <joint name="${name}_mount" type="fixed">
             <parent link="${parent}"/>
-            <child link="${prefix}_housing"/>
+            <child link="${name}_housing"/>
             <xacro:insert_block name="origin"/>
         </joint>
 
         <!-- Drum link -->
-        <link name="${prefix}_drum">
+        <link name="${name}_drum">
             <visual>
                 <geometry>
                     <cylinder radius="${drum_radius}" length="${drum_length}"/>
@@ -57,24 +57,40 @@
         </link>
 
         <!-- Drum rotation joint -->
-        <joint name="${prefix}_spin" type="continuous">
-            <parent link="${prefix}_housing"/>
-            <child link="${prefix}_drum"/>
+        <joint name="${name}_spin" type="continuous">
+            <parent link="${name}_housing"/>
+            <child link="${name}_drum"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <axis xyz="0 0 1"/>
             <dynamics damping="0.1" friction="0.1"/>
         </joint>
 
+        <!-- Cable output mount point -->
+        <xacro:cable_mount name="${name}_output" parent="${name}_drum">
+            <origin xyz="0 0 ${drum_length/2}" rpy="0 0 0"/>
+        </xacro:cable_mount>
+
         <!-- Add transmission for motor control -->
-        <transmission name="${prefix}_trans">
+        <transmission name="${name}_trans">
             <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${prefix}_spin">
+            <joint name="${name}_spin">
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             </joint>
-            <actuator name="${prefix}_motor">
-                <mechanicalReduction>${winch_gear_ratio}</mechanicalReduction>
+            <actuator name="${name}_motor">
+                <mechanicalReduction>${gear_ratio}</mechanicalReduction>
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             </actuator>
         </transmission>
+
+        <!-- Gazebo-specific properties -->
+        <gazebo reference="${name}_housing">
+            <material>Gazebo/DarkGrey</material>
+        </gazebo>
+
+        <gazebo reference="${name}_drum">
+            <material>Gazebo/Grey</material>
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+        </gazebo>
     </xacro:macro>
 </robot>

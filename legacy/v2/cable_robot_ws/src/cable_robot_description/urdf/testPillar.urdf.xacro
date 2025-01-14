@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<robot name="test_pillar" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Include pillar component -->
+    <xacro:include filename="$(find CDPRX)/urdf/components/pillar.urdf.xacro"/>
+    
+    <!-- Test configuration -->
+    <xacro:property name="test_height" value="2.0"/>
+    <xacro:property name="test_outlets" value="${[1.5, 1.0]}"/>
+    
+    <!-- World link -->
+    <link name="world"/>
+    
+    <!-- Create test pillar -->
+    <xacro:frame_pillar 
+        prefix="test_pillar"
+        parent="world"
+        position_x="0"
+        position_y="0"
+        height="${test_height}"
+        outlet_heights="${test_outlets}">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:frame_pillar>
+</robot>

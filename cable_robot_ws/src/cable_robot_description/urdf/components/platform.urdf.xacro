@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Include platform properties -->
+    <xacro:include filename="$(find cable_robot_description)/urdf/properties/platform_properties.urdf.xacro"/>
+
+    <!-- Platform macro -->
+    <xacro:macro name="end_effector_platform" params="parent *origin">
+        <!-- Platform center/base -->
+        <link name="platform_center"/>
+
+        <!-- Joint to parent -->
+        <joint name="platform_base_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="platform_center"/>
+            <xacro:insert_block name="origin"/>
+        </joint>
+
+        <!-- Create the 12 edges of the rectangular prism -->
+        <!-- Bottom frame -->
+        <xacro:create_edge_tube name="bottom_front" 
+            parent="platform_center"
+            length="${platform_width}"
+            trans_x="0"
+            trans_y="${platform_length/2}"
+            trans_z="${-platform_height/2}"
+            rot_z="0"/>
+            
+        <xacro:create_edge_tube name="bottom_back"
+            parent="platform_center"
+            length="${platform_width}"
+            trans_x="0"
+            trans_y="${-platform_length/2}"
+            trans_z="${-platform_height/2}"
+            rot_z="0"/>
+            
+        <xacro:create_edge_tube name="bottom_left"
+            parent="platform_center"
+            length="${platform_length}"
+            trans_x="${-platform_width/2}"
+            trans_y="0"
+            trans_z="${-platform_height/2}"
+            rot_z="${pi/2}"/>
+            
+        <xacro:create_edge_tube name="bottom_right"
+            parent="platform_center"
+            length="${platform_length}"
+            trans_x="${platform_width/2}"
+            trans_y="0"
+            trans_z="${-platform_height/2}"
+            rot_z="${pi/2}"/>
+
+        <!-- Top frame -->
+        <xacro:create_edge_tube name="top_front"
+            parent="platform_center"
+            length="${platform_width}"
+            trans_x="0"
+            trans_y="${platform_length/2}"
+            trans_z="${platform_height/2}"
+            rot_z="0"/>
+            
+        <xacro:create_edge_tube name="top_back"
+            parent="platform_center"
+            length="${platform_width}"
+            trans_x="0"
+            trans_y="${-platform_length/2}"
+            trans_z="${platform_height/2}"
+            rot_z="0"/>
+            
+        <xacro:create_edge_tube name="top_left"
+            parent="platform_center"
+            length="${platform_length}"
+            trans_x="${-platform_width/2}"
+            trans_y="0"
+            trans_z="${platform_height/2}"
+            rot_z="${pi/2}"/>
+            
+        <xacro:create_edge_tube name="top_right"
+            parent="platform_center"
+            length="${platform_length}"
+            trans_x="${platform_width/2}"
+            trans_y="0"
+            trans_z="${platform_height/2}"
+            rot_z="${pi/2}"/>
+
+        <!-- Vertical edges -->
+        <xacro:create_edge_tube name="vert_front_left"
+            parent="platform_center"
+            length="${platform_height}"
+            trans_x="${-platform_width/2}"
+            trans_y="${platform_length/2}"
+            trans_z="0"
+            rot_y="${pi/2}"/>
+            
+        <xacro:create_edge_tube name="vert_front_right"
+            parent="platform_center"
+            length="${platform_height}"
+            trans_x="${platform_width/2}"
+            trans_y="${platform_length/2}"
+            trans_z="0"
+            rot_y="${pi/2}"/>
+            
+        <xacro:create_edge_tube name="vert_back_left"
+            parent="platform_center"
+            length="${platform_height}"
+            trans_x="${-platform_width/2}"
+            trans_y="${-platform_length/2}"
+            trans_z="0"
+            rot_y="${pi/2}"/>
+            
+        <xacro:create_edge_tube name="vert_back_right"
+            parent="platform_center"
+            length="${platform_height}"
+            trans_x="${platform_width/2}"
+            trans_y="${-platform_length/2}"
+            trans_z="0"
+            rot_y="${pi/2}"/>
+
+        <!-- Cable attachment points -->
+        <xacro:create_cable_mount name="mount_front_left"
+            parent="platform_center"
+            trans_x="${-platform_width/2}"
+            trans_y="${platform_length/2}"
+            trans_z="${platform_height/2}"/>
+            
+        <xacro:create_cable_mount name="mount_front_right"
+            parent="platform_center"
+            trans_x="${platform_width/2}"
+            trans_y="${platform_length/2}"
+            trans_z="${platform_height/2}"/>
+            
+        <xacro:create_cable_mount name="mount_back_left"
+            parent="platform_center"
+            trans_x="${-platform_width/2}"
+            trans_y="${-platform_length/2}"
+            trans_z="${platform_height/2}"/>
+            
+        <xacro:create_cable_mount name="mount_back_right"
+            parent="platform_center"
+            trans_x="${platform_width/2}"
+            trans_y="${-platform_length/2}"
+            trans_z="${platform_height/2}"/>
+    </xacro:macro>
+
+    <!-- Helper macro for creating edge tubes -->
+    <xacro:macro name="create_edge_tube" params="name parent length trans_x trans_y trans_z rot_x:=0 rot_y:=0 rot_z:=0">
+        <link name="${name}_link">
+            <visual>
+                <geometry>
+                    <box size="${length} ${tube_size} ${tube_size}"/>
+                </geometry>
+                <material name="platform_color"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="${length} ${tube_size} ${tube_size}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="${tube_mass_per_meter * length}"/>
+                <inertia 
+                    ixx="${(1/12) * tube_mass_per_meter * length * (tube_size*tube_size)}"
+                    iyy="${(1/12) * tube_mass_per_meter * length * (length*length + tube_size*tube_size)}"
+                    izz="${(1/12) * tube_mass_per_meter * length * (length*length + tube_size*tube_size)}"
+                    ixy="0" ixz="0" iyz="0"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_link"/>
+            <origin xyz="${trans_x} ${trans_y} ${trans_z}" rpy="${rot_x} ${rot_y} ${rot_z}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Helper macro for cable mounting points -->
+    <xacro:macro name="create_cable_mount" params="name parent trans_x trans_y trans_z">
+        <link name="${name}_link">
+            <visual>
+                <geometry>
+                    <sphere radius="${cable_mount_radius}"/>
+                </geometry>
+                <material name="mount_color"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${cable_mount_radius}"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="${cable_mount_mass}"/>
+                <inertia 
+                    ixx="${(2/5) * cable_mount_mass * cable_mount_radius * cable_mount_radius}"
+                    iyy="${(2/5) * cable_mount_mass * cable_mount_radius * cable_mount_radius}"
+                    izz="${(2/5) * cable_mount_mass * cable_mount_radius * cable_mount_radius}"
+                    ixy="0" ixz="0" iyz="0"/>
+            </inertial>
+        </link>
+
+        <joint name="${name}_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${name}_link"/>
+            <origin xyz="${trans_x} ${trans_y} ${trans_z}" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
+</robot>
