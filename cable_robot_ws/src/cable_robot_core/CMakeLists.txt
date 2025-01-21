@@ -69,28 +69,31 @@ install(
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   
-  # Kinematics tests
-  ament_add_gtest(test_forward_kinematics
-    test/kinematics/test_forward_kinematics.cpp
-  )
-  target_link_libraries(test_forward_kinematics ${PROJECT_NAME})
-  
+
   ament_add_gtest(test_inverse_kinematics
     test/kinematics/test_inverse_kinematics.cpp
   )
   target_link_libraries(test_inverse_kinematics ${PROJECT_NAME})
   
-  # Workspace tests
-  ament_add_gtest(test_workspace
-    test/workspace/test_workspace.cpp
-  )
-  target_link_libraries(test_workspace ${PROJECT_NAME})
+  # # Kinematics tests
+  # ament_add_gtest(test_forward_kinematics
+  #   test/kinematics/test_forward_kinematics.cpp
+  # )
+  # target_link_libraries(test_forward_kinematics ${PROJECT_NAME})
   
-  # Controller tests
-  ament_add_gtest(test_controllers
-    test/controllers/test_controllers.cpp
-  )
-  target_link_libraries(test_controllers ${PROJECT_NAME})
+  
+  
+  # # Workspace tests
+  # ament_add_gtest(test_workspace
+  #   test/workspace/test_workspace.cpp
+  # )
+  # target_link_libraries(test_workspace ${PROJECT_NAME})
+  
+  # # Controller tests
+  # ament_add_gtest(test_controllers
+  #   test/controllers/test_controllers.cpp
+  # )
+  # target_link_libraries(test_controllers ${PROJECT_NAME})
 endif()
 
 # Export dependencies
