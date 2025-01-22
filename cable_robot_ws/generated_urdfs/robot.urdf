@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<robot name="cable_robot_platform">
+    <!-- Base Link: World -->
+    <link name="world"/>
+
+    <!-- Platform Link -->
+    <link name="platform">
+        <!-- Visual Properties -->
+        <visual>
+            <geometry>
+                <box size="0.5 0.5 0.1"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <!-- Collision Properties -->
+        <collision>
+            <geometry>
+                <box size="0.5 0.5 0.1"/>
+            </geometry>
+        </collision>
+        <!-- Inertial Properties -->
+        <inertial>
+            <mass value="1.0"/>
+            <inertia 
+                ixx="0.021666666666666667" ixy="0.0" ixz="0.0" 
+                iyy="0.021666666666666667" iyz="0.0" 
+                izz="0.041666666666666664"/>
+        </inertial>
+    </link>
+
+    <!-- Floating Joint to Spawn in Gazebo -->
+    <joint name="floating_joint" type="floating">
+        <parent link="world"/>
+        <child link="platform"/>
+    </joint>
+
+    <!-- Attachment Points -->
+    <!-- Attachment Point 1 -->
+    <link name="attachment_point_1">
+        <visual>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <inertia 
+                ixx="0.0001" ixy="0.0" ixz="0.0" 
+                iyy="0.0001" iyz="0.0" 
+                izz="0.0001"/>
+        </inertial>
+    </link>
+    <joint name="attachment_joint_1" type="fixed">
+        <parent link="platform"/>
+        <child link="attachment_point_1"/>
+        <origin xyz="0.25 0.25 0.05" rpy="0 0 0"/>
+    </joint>
+    <!-- Attachment Point 2 -->
+    <link name="attachment_point_2">
+        <visual>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <inertia 
+                ixx="0.0001" ixy="0.0" ixz="0.0" 
+                iyy="0.0001" iyz="0.0" 
+                izz="0.0001"/>
+        </inertial>
+    </link>
+    <joint name="attachment_joint_2" type="fixed">
+        <parent link="platform"/>
+        <child link="attachment_point_2"/>
+        <origin xyz="-0.25 0.25 0.05" rpy="0 0 0"/>
+    </joint>
+    <!-- Attachment Point 3 -->
+    <link name="attachment_point_3">
+        <visual>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <inertia 
+                ixx="0.0001" ixy="0.0" ixz="0.0" 
+                iyy="0.0001" iyz="0.0" 
+                izz="0.0001"/>
+        </inertial>
+    </link>
+    <joint name="attachment_joint_3" type="fixed">
+        <parent link="platform"/>
+        <child link="attachment_point_3"/>
+        <origin xyz="0.25 -0.25 0.05" rpy="0 0 0"/>
+    </joint>
+    <!-- Attachment Point 4 -->
+    <link name="attachment_point_4">
+        <visual>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <inertia 
+                ixx="0.0001" ixy="0.0" ixz="0.0" 
+                iyy="0.0001" iyz="0.0" 
+                izz="0.0001"/>
+        </inertial>
+    </link>
+    <joint name="attachment_joint_4" type="fixed">
+        <parent link="platform"/>
+        <child link="attachment_point_4"/>
+        <origin xyz="-0.25 -0.25 0.05" rpy="0 0 0"/>
+    </joint>
+</robot>

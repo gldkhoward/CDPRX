@@ -115,6 +115,11 @@ TEST_F(InverseKinematicsTest, CalculateCableLengthsValidPose)
 
     std::vector<double> lengths;
     EXPECT_NO_THROW(lengths = ik.calculateCableLengths(pose));
+    // Log all the length details:
+    for (size_t i = 0; i < lengths.size(); ++i)
+    {
+        std::cout << "Length " << i << ": " << lengths[i] << std::endl;
+    }
     EXPECT_EQ(lengths.size(), config_.num_cables);
 
     // Verify lengths are within limits

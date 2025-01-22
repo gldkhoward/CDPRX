@@ -1,0 +1,20 @@
+# cable_robot_ws/src/cable_robot_description/config/robot_configurations/default.yaml
+# Description: Default robot configuration parameters
+platform:
+  dimensions: [0.5, 0.5, 0.1] # [x, y, z] in meters
+  mass: 1.0 # kg
+  attachment_points: # relative to platform center
+    - [0.25, 0.25, 0.05] # front right
+    - [-0.25, 0.25, 0.05] # front left
+    - [-0.25, -0.25, 0.05] # back left
+    - [0.25, -0.25, 0.05] # back right
+
+pillars:
+  height: 2.0 # meters
+  radius: 0.1 # meters
+  positions: # [x, y] positions of pillars
+    - [1.0, 1.0] # front right
+    - [-1.0, 1.0] # front left
+    - [-1.0, -1.0] # back left
+    - [1.0, -1.0] # back right
+  attachment_heights: [1.8, 1.8, 1.8, 1.8] # height of each attachment point

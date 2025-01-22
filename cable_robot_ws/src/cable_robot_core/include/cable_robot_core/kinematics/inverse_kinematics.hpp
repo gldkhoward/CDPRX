@@ -19,8 +19,6 @@ namespace cable_robot_core
      * - Jacobian: JDK = -A (from equation 4.5)
      *
      * Performance characteristics:
-     * - 6 trigonometric evaluations
-     * - ~242 arithmetic floating point operations
      * - Real-time capable on microcontrollers
      *
      * @note All vectors are expressed in the world frame unless otherwise specified

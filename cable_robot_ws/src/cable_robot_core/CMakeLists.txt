@@ -68,13 +68,9 @@ install(
 # Testing
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
-  
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
 
-  ament_add_gtest(test_inverse_kinematics
-    test/kinematics/test_inverse_kinematics.cpp
-  )
-  target_link_libraries(test_inverse_kinematics ${PROJECT_NAME})
-  
   # # Kinematics tests
   # ament_add_gtest(test_forward_kinematics
   #   test/kinematics/test_forward_kinematics.cpp
@@ -95,6 +91,19 @@ if(BUILD_TESTING)
   # )
   # target_link_libraries(test_controllers ${PROJECT_NAME})
 endif()
+
+ament_add_gtest(test_inverse_kinematics
+  test/kinematics/test_inverse_kinematics.cpp
+)
+target_include_directories(test_inverse_kinematics
+  PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${EIGEN3_INCLUDE_DIR}
+)
+target_link_libraries(test_inverse_kinematics
+  ${PROJECT_NAME}
+  ${EIGEN3_LIBRARIES}
+)
 
 # Export dependencies
 ament_export_include_directories(include)

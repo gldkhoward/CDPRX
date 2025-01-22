@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load robot configuration parameters from YAML -->
+  <rosparam command="load" 
+            file="$(find cable_robot_description)/config/robot_configurations/default.yaml" />
+
+  <!-- Convert XACRO to URDF and load to parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro 
+         '$(find cable_robot_description)/urdf/components/platform.urdf.xacro'" />
+
+  <!-- Launch robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" 
+        type="robot_state_publisher" />
+
+  <!-- Launch joint state publisher -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" 
+        type="joint_state_publisher" />
+
+  <!-- Launch RViz for visualization -->
+  <node name="rviz" pkg="rviz" type="rviz" 
+        args="-d $(find cable_robot_description)/config/robot.rviz" />
+</launch>
