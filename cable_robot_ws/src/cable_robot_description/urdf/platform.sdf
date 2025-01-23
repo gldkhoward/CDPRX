@@ -1,0 +1,202 @@
+<?xml version='1.0'?>
+<sdf version="1.7">
+  <model name="cable_robot_platform">
+    <!-- Platform Link -->
+    <link name="platform">
+      <visual name="platform_visual">
+        <geometry>
+          <box>
+            <size>0.5 0.5 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0 0 1 1</ambient>
+          <diffuse>0 0 1 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="platform_collision">
+        <geometry>
+          <box>
+            <size>0.5 0.5 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.0216667</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0216667</iyy>
+          <iyz>0</iyz>
+          <izz>0.0416667</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Attachment Points -->
+    <!-- Attachment Point 1 -->
+    <link name="attachment_point_1">
+      <visual name="ap1_visual">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="ap1_collision">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <pose>0.25 0.25 0.15 0 0 0</pose>
+    </link>
+    <joint name="attachment_joint_1" type="fixed">
+      <parent>platform</parent>
+      <child>attachment_point_1</child>
+      <pose>0.25 0.25 0.15 0 0 0</pose>
+    </joint>
+
+    <!-- Attachment Point 2 -->
+    <link name="attachment_point_2">
+      <visual name="ap2_visual">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="ap2_collision">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <pose>-0.25 0.25 0.15 0 0 0</pose>
+    </link>
+    <joint name="attachment_joint_2" type="fixed">
+      <parent>platform</parent>
+      <child>attachment_point_2</child>
+      <pose>-0.25 0.25 0.15 0 0 0</pose>
+    </joint>
+
+    <!-- Attachment Point 3 -->
+    <link name="attachment_point_3">
+      <visual name="ap3_visual">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="ap3_collision">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <pose>0.25 -0.25 0.15 0 0 0</pose>
+    </link>
+    <joint name="attachment_joint_3" type="fixed">
+      <parent>platform</parent>
+      <child>attachment_point_3</child>
+      <pose>0.25 -0.25 0.15 0 0 0</pose>
+    </joint>
+
+    <!-- Attachment Point 4 -->
+    <link name="attachment_point_4">
+      <visual name="ap4_visual">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="ap4_collision">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+      <pose>-0.25 -0.25 0.15 0 0 0</pose>
+    </link>
+    <joint name="attachment_joint_4" type="fixed">
+      <parent>platform</parent>
+      <child>attachment_point_4</child>
+      <pose>-0.25 -0.25 0.15 0 0 0</pose>
+    </joint>
+
+    <!-- ROS 2 Integration Plugin -->
+    <plugin name="ros2_plugin" filename="libgazebo_ros_init.so"/>
+  </model>
+</sdf>

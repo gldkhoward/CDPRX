@@ -20,6 +20,8 @@ setup(
             glob('urdf/*.urdf')),  # For standard URDF files
         (os.path.join('share', package_name, 'urdf'),
             glob('urdf/*.urdf.xacro')),  # Add this line for Xacro files
+        (os.path.join('share', package_name, 'urdf'),
+            glob('urdf/*.sdf')),  # Add this line for Xacro files
     ],
     install_requires=['setuptools'],
     zip_safe=True,
