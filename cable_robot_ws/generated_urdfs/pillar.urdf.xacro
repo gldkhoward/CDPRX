@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pillar">
+
+    <!-- Parameters -->
+    <xacro:arg name="x_pos" default="0.0"/>
+    <xacro:arg name="y_pos" default="0.0"/>
+    <xacro:arg name="z_pos" default="0.0"/>
+    <xacro:arg name="pillar_height" default="2.0"/>
+    <xacro:arg name="pillar_width" default="0.1"/>
+    <xacro:arg name="attachment_height" default="2.0"/>
+
+    <!-- Pillar Link -->
+    <link name="pillar_link">
+        <!-- Visual Properties -->
+        <visual>
+            <geometry>
+                <box size="$(arg pillar_width) $(arg pillar_width) $(arg pillar_height)"/>
+            </geometry>
+            <material name="gray">
+                <color rgba="0.5 0.5 0.5 1"/>
+            </material>
+        </visual>
+        <!-- Collision Properties -->
+        <collision>
+            <geometry>
+                <box size="$(arg pillar_width) $(arg pillar_width) $(arg pillar_height)"/>
+            </geometry>
+        </collision>
+        <!-- Inertial Properties -->
+        <inertial>
+            <mass value="10.0"/>
+            <inertia 
+                ixx="0.083333" ixy="0.0" ixz="0.0" 
+                iyy="0.083333" iyz="0.0" 
+                izz="0.083333"/>
+        </inertial>
+    </link>
+
+    <!-- Fixed Joint to World -->
+    <joint name="pillar_joint" type="fixed">
+        <parent link="world"/>
+        <child link="pillar_link"/>
+        <origin xyz="$(arg x_pos) $(arg y_pos) $(arg z_pos)" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Attachment Point -->
+    <link name="attachment_point">
+        <visual>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <inertia 
+                ixx="0.0001" ixy="0.0" ixz="0.0" 
+                iyy="0.0001" iyz="0.0" 
+                izz="0.0001"/>
+        </inertial>
+    </link>
+    <joint name="attachment_joint" type="fixed">
+        <parent link="pillar_link"/>
+        <child link="attachment_point"/>
+        <origin xyz="0 0 $(arg attachment_height)" rpy="0 0 0"/>
+    </joint>
+
+</robot>

@@ -6,8 +6,6 @@ cmake_minimum_required(VERSION 3.8)
     endif()
 
     find_package(ament_cmake REQUIRED)
-    find_package(ros_gz_sim REQUIRED)
-    find_package(ros_gz_bridge REQUIRED)
     install(DIRECTORY launch worlds
         DESTINATION share/${PROJECT_NAME}
     )

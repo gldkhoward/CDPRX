@@ -11,8 +11,6 @@
 
     <depend>gazebo_ros</depend>
     <depend>gazebo_ros_pkgs</depend>
-    <depend>cable_robot_description</depend>
-    <depend>cable_robot_interfaces</depend>
     <depend>ros_gz_sim</depend>
     <depend>ros_gz_bridge</depend>
     
