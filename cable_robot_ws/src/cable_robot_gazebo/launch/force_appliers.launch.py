@@ -10,13 +10,21 @@ def generate_launch_description():
             default_value='',
             description='Namespace for the nodes'
         ),
+        DeclareLaunchArgument(
+            'num_attachment_points',
+            default_value='4',
+            description='Number of cable attachment points'
+        ),
         
-        *[Node(
+        Node(
             package='cable_robot_gazebo',
             executable='force_applier',
-            name=f'force_applier_{i}',
+            name='force_applier',
             namespace=LaunchConfiguration('namespace'),
-            parameters=[{'id': i}],
+            parameters=[{
+                'num_attachment_points': LaunchConfiguration('num_attachment_points')
+            }],
+            arguments=['--ros-args', '--log-level', 'debug'],
             output='screen'
-        ) for i in range(1, 5)]
+        )
     ])

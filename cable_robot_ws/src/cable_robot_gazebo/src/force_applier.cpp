@@ -1,91 +1,74 @@
 #include <rclcpp/rclcpp.hpp>
-#include <geometry_msgs/msg/vector3.hpp>
-#include <geometry_msgs/msg/point.hpp> // Include Point message type
-#include <gazebo_msgs/srv/apply_link_wrench.hpp>
-#include <builtin_interfaces/msg/duration.hpp>
-#include <memory>
-#include <chrono>
+#include <geometry_msgs/msg/wrench.hpp>
+#include <cable_robot_interfaces/msg/platform_forces.hpp>
+
+using std::placeholders::_1;
 
 class ForceApplier : public rclcpp::Node
 {
 public:
     ForceApplier() : Node("force_applier")
     {
-        // Declare and get the node ID parameter
-        this->declare_parameter<int>("id", 1);
-        id_ = this->get_parameter("id").as_int();
+        // 1. Parameter Initialization
+        this->declare_parameter<int>("num_attachment_points", 4);
+        num_attachment_points_ = this->get_parameter("num_attachment_points").as_int();
 
-        // Validate ID
-        if (id_ < 1 || id_ > 4)
+        if (num_attachment_points_ <= 0)
         {
-            RCLCPP_ERROR(this->get_logger(), "Invalid ID %d. Must be between 1 and 4.", id_);
-            throw std::runtime_error("Invalid node ID");
+            RCLCPP_FATAL(this->get_logger(), "Invalid num_attachment_points: %d. Must be > 0", num_attachment_points_);
+            throw std::runtime_error("Invalid num_attachment_points");
         }
 
-        // Create subscriber for force vector
-        std::string topic_name = "/cable_force_vector_" + std::to_string(id_);
-        subscriber_ = this->create_subscription<geometry_msgs::msg::Vector3>(
-            topic_name, 10,
-            std::bind(&ForceApplier::force_callback, this, std::placeholders::_1));
-
-        // Create Gazebo service client
-        client_ = this->create_client<gazebo_msgs::srv::ApplyLinkWrench>("/gazebo/apply_link_wrench");
-
-        // Wait for the service to be available
-        while (!client_->wait_for_service(std::chrono::seconds(1)))
+        // 2. Create Publishers for Each Attachment Point
+        RCLCPP_INFO(this->get_logger(), "Creating %d force publishers:", num_attachment_points_);
+        for (int i = 1; i <= num_attachment_points_; ++i)
         {
-            RCLCPP_INFO(this->get_logger(), "Waiting for Gazebo ApplyLinkWrench service...");
+            std::string topic_name = "/cable_robot/force_ap" + std::to_string(i);
+            auto publisher = this->create_publisher<geometry_msgs::msg::Wrench>(topic_name, 10);
+            wrench_publishers_.push_back(publisher);
+            RCLCPP_INFO(this->get_logger(), " - %s", topic_name.c_str());
         }
 
-        RCLCPP_INFO(this->get_logger(), "Force applier %d initialized.", id_);
+        // 3. Subscribe to Input Forces
+        input_subscriber_ = this->create_subscription<cable_robot_interfaces::msg::PlatformForces>("/cable_robot/input_forces", 10,
+                                                                                                   std::bind(&ForceApplier::input_forces_callback, this, _1));
+
+        RCLCPP_INFO(this->get_logger(), "Force applier ready");
     }
 
 private:
-    void force_callback(const geometry_msgs::msg::Vector3::SharedPtr msg)
+    // 4. Input Forces Callback
+    void input_forces_callback(const cable_robot_interfaces::msg::PlatformForces::SharedPtr msg)
     {
-        RCLCPP_DEBUG(this->get_logger(), "Received force: [x: %f, y: %f, z: %f]", msg->x, msg->y, msg->z);
-
-        // Prepare the service request
-        auto request = std::make_shared<gazebo_msgs::srv::ApplyLinkWrench::Request>();
-        request->link_name = "attachment_point_" + std::to_string(id_);
-        request->reference_frame = "world"; // Apply force in the world frame
-
-        // Set reference point as a Point message (not Vector3)
-        request->reference_point.x = 0.0;
-        request->reference_point.y = 0.0;
-        request->reference_point.z = 0.0;
-
-        // Set the force and torque
-        request->wrench.force = *msg;
-        request->wrench.torque = geometry_msgs::msg::Vector3(); // No torque
-        request->duration.sec = 10;                             // Apply force for 10 seconds
-
-        // Call the service asynchronously
-        auto future = client_->async_send_request(request);
-        future.wait_for(std::chrono::seconds(1));
-
-        // Check the result
-        if (future.valid())
+        // Validate message size
+        if (msg->forces.size() != num_attachment_points_)
         {
-            auto response = future.get();
-            if (response->success)
-            {
-                RCLCPP_INFO(this->get_logger(), "Applied force to link %d", id_);
-            }
-            else
-            {
-                RCLCPP_ERROR(this->get_logger(), "Service error: %s", response->status_message.c_str());
-            }
+            RCLCPP_ERROR(this->get_logger(),
+                         "Received %zu forces but expected %d. Ignoring message.",
+                         msg->forces.size(), num_attachment_points_);
+            return;
         }
-        else
+
+        // Publish each wrench to corresponding topic
+        for (size_t i = 0; i < msg->forces.size(); ++i)
         {
-            RCLCPP_ERROR(this->get_logger(), "Service call failed.");
+            const auto &wrench = msg->forces[i];
+
+            // Optional: Add debug logging
+            RCLCPP_DEBUG(this->get_logger(),
+                         "AP%d: Force [%.2f, %.2f, %.2f] | Torque [%.2f, %.2f, %.2f]",
+                         i + 1,
+                         wrench.force.x, wrench.force.y, wrench.force.z,
+                         wrench.torque.x, wrench.torque.y, wrench.torque.z);
+
+            wrench_publishers_[i]->publish(wrench);
         }
     }
 
-    int id_;
-    rclcpp::Subscription<geometry_msgs::msg::Vector3>::SharedPtr subscriber_;
-    rclcpp::Client<gazebo_msgs::srv::ApplyLinkWrench>::SharedPtr client_;
+    // Member variables
+    int num_attachment_points_;
+    std::vector<rclcpp::Publisher<geometry_msgs::msg::Wrench>::SharedPtr> wrench_publishers_;
+    rclcpp::Subscription<cable_robot_interfaces::msg::PlatformForces>::SharedPtr input_subscriber_;
 };
 
 int main(int argc, char **argv)

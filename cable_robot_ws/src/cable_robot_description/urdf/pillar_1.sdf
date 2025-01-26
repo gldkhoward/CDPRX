@@ -2,6 +2,7 @@
 <sdf version="1.7">
   <model name="pillar">
     <static>true</static>  <!-- Make the pillar static -->
+    <pose>1.0 1.0 1.0 0 0 0</pose>  <!-- Position of the pillar -->
     <link name="pillar_link">
       <visual name="visual">
         <geometry>
@@ -21,6 +22,34 @@
         </geometry>
       </collision>
     </link>
-    <pose>1.0 1.0 1.0 0 0 0</pose>  <!-- Position of the pillar -->
+    <link name="attachment_point_1">
+      <pose>0 0 1.0 0 0 0</pose>  <!-- Position of the attachment point -->
+      <visual name="ap1_visual">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>  <!-- Sphere radius -->
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>0 1 0 1</ambient>  <!-- Green color -->
+        </material>
+      </visual>
+      <collision name="ap1_collision">
+        <geometry>
+          <sphere>
+            <radius>0.02</radius>  <!-- Collision geometry -->
+          </sphere>
+        </geometry>
+      </collision>
+    </link>
+    <plugin name="pillar_pose_pub" filename="libgazebo_ros_p3d.so">
+        <ros>
+          <namespace>/pillar_1</namespace>
+          <remapping>odom:=odo</remapping>
+        </ros>
+        <body_name>attachment_point_1</body_name>
+        <frame_name>world</frame_name>
+        <update_rate>120</update_rate>
+    </plugin>
   </model>
 </sdf>

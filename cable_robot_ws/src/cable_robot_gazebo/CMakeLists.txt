@@ -9,6 +9,11 @@ cmake_minimum_required(VERSION 3.8)
     find_package(rclcpp REQUIRED)
     find_package(geometry_msgs REQUIRED)
     find_package(gazebo_msgs REQUIRED)
+    find_package(rosgraph_msgs REQUIRED)
+    find_package(ros_gz_sim REQUIRED)
+    find_package(cable_robot_interfaces REQUIRED)
+
+
     install(DIRECTORY launch worlds
         DESTINATION share/${PROJECT_NAME}
     )
@@ -18,9 +23,11 @@ cmake_minimum_required(VERSION 3.8)
 
     # Link dependencies
     ament_target_dependencies(force_applier
-    rclcpp
-    geometry_msgs
-    gazebo_msgs
+        rclcpp
+        geometry_msgs
+        gazebo_msgs
+        rosgraph_msgs
+        cable_robot_interfaces
     )
 
     # Install the executable
@@ -28,6 +35,13 @@ cmake_minimum_required(VERSION 3.8)
     force_applier
     DESTINATION lib/${PROJECT_NAME}
     )
+
+
+
+    # Export dependencies
+   
+    ament_export_dependencies(rclcpp)
+    ament_export_dependencies(geometry_msgs)
 
     ament_package()
     

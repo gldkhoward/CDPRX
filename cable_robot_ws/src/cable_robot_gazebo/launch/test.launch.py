@@ -17,9 +17,12 @@ def generate_launch_description():
         'gazebo.launch.py'
     )
 
-    # Include the Gazebo launch file
+    # Include the Gazebo launch file with the necessary plugins
     gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(gazebo_launch_file)
+        PythonLaunchDescriptionSource(gazebo_launch_file),
+        launch_arguments={
+            'use_sim_time': 'true'  # Ensure ROS 2 uses Gazebo's simulation time
+        }.items()
     )
 
     # Create the launch description
@@ -42,15 +45,17 @@ def generate_launch_description():
         )
         ld.add_action(spawn_entity_node)
 
+    # Spawn the platform
     platform_sdf_path = os.path.join(sdf_folder, f"platform.sdf")
     spawn_platform_node = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=[
             '-entity', 'cable_robot_platform',  # Entity name
-            '-file', platform_sdf_path                   # Path to the SDF file
+            '-file', platform_sdf_path,          # Path to the SDF file
         ],
         output='screen'
     )
     ld.add_action(spawn_platform_node)
+
     return ld

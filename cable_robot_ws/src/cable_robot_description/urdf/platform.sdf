@@ -2,6 +2,8 @@
 <sdf version="1.7">
   <model name="cable_robot_platform">
     <!-- Platform Link -->
+    <static>false</static>
+    <pose>0 0 0.2 0 0 0</pose>
     <link name="platform">
       <visual name="platform_visual">
         <geometry>
@@ -33,6 +35,18 @@
           <izz>0.0416667</izz>
         </inertia>
       </inertial>
+       <sensor name="platform_imu" type="imu">
+        <!-- ensure the sensor is active (required) -->
+        <always_on>true</always_on>
+        <update_rate>60</update_rate>
+        <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+          <ros>
+            <!-- publish to /imu/data -->
+            <namespace>/cable_robot</namespace>
+            <remapping>~/out:=data</remapping>
+          </ros>
+        </plugin>
+      </sensor>
     </link>
 
     <!-- Attachment Points -->
@@ -109,6 +123,7 @@
         </inertia>
       </inertial>
       <pose>-0.25 0.25 0.15 0 0 0</pose>
+
     </link>
     <joint name="attachment_joint_2" type="fixed">
       <parent>platform</parent>
@@ -189,6 +204,7 @@
         </inertia>
       </inertial>
       <pose>-0.25 -0.25 0.15 0 0 0</pose>
+      
     </link>
     <joint name="attachment_joint_4" type="fixed">
       <parent>platform</parent>
@@ -198,5 +214,77 @@
 
     <!-- ROS 2 Integration Plugin -->
     <plugin name="ros2_plugin" filename="libgazebo_ros_init.so"/>
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so"/>
+    <plugin name="platform_pose_pub" filename="libgazebo_ros_p3d.so">
+        <ros>
+          <namespace>/cable_robot</namespace>
+          <remapping>odom:=odo</remapping>
+        </ros>
+        <body_name>platform</body_name>
+        <frame_name>world</frame_name>
+        <update_rate>120</update_rate>
+    </plugin>
+
+   
+
+
+    <!-- Force Application -->
+
+    <!-- Force Application Point 1 -->
+    <plugin name="gap1_ros_force" filename="libgazebo_ros_force.so">
+      <ros>
+        <!-- Add a namespace -->
+        <namespace>/cable_robot</namespace>
+        <!-- Remap the default topic -->
+        <remapping>gazebo_ros_force:=force_ap1</remapping>
+      </ros>
+      <!-- Name of link within model which will receive the force -->
+      <link_name>attachment_point_1</link_name>
+      <!-- Frame where the force/torque will be applied (options: world; link)-->
+      <force_frame>link</force_frame>
+
+    </plugin>
+
+    <!-- Force Application Point 2 -->
+    <plugin name="ap2_ros_force" filename="libgazebo_ros_force.so">
+      <ros>
+        <!-- Add a namespace -->
+        <namespace>/cable_robot</namespace>
+        <!-- Remap the default topic -->
+        <remapping>gazebo_ros_force:=force_ap2</remapping>
+      </ros>
+      <!-- Name of link within model which will receive the force -->
+      <link_name>attachment_point_2</link_name>
+      <!-- Frame where the force/torque will be applied (options: world; link)-->
+      <force_frame>link</force_frame>
+    </plugin>
+
+    <!-- Force Application Point 3 -->
+    <plugin name="ap3_ros_force" filename="libgazebo_ros_force.so">
+      <ros>
+        <!-- Add a namespace -->
+        <namespace>/cable_robot</namespace>
+        <!-- Remap the default topic -->
+        <remapping>gazebo_ros_force:=force_ap3</remapping>
+      </ros>
+      <!-- Name of link within model which will receive the force -->
+      <link_name>attachment_point_3</link_name>
+      <!-- Frame where the force/torque will be applied (options: world; link)-->
+      <force_frame>link</force_frame>
+    </plugin>
+
+    <!-- Force Application Point 4 -->
+    <plugin name="ap4_ros_force" filename="libgazebo_ros_force.so">
+      <ros>
+        <!-- Add a namespace -->
+        <namespace>/cable_robot</namespace>
+        <!-- Remap the default topic -->
+        <remapping>gazebo_ros_force:=force_ap4</remapping>
+      </ros>
+      <!-- Name of link within model which will receive the force -->
+      <link_name>attachment_point_4</link_name>
+      <!-- Frame where the force/torque will be applied (options: world; link)-->
+      <force_frame>link</force_frame>
+    </plugin>
   </model>
 </sdf>

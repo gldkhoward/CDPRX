@@ -1,33 +1,45 @@
 <?xml version="1.0" ?>
-<sdf version="1.6">
-  <world name="empty">
-    <physics name="1ms" type="dart">
-      <max_step_size>0.001</max_step_size>
-      <real_time_factor>1.0</real_time_factor>
+<sdf version="1.9">
+  <world name="empty_world">
+
+    <!-- Global lighting and physics settings -->
+    <scene>
+      <ambient>0.4 0.4 0.4 1.0</ambient> <!-- Ambient light color (RGBA) -->
+      <background>0.7 0.7 0.7 1.0</background> <!-- Background color (RGBA) -->
+      <shadows>true</shadows> <!-- Enable shadows -->
+    </scene>
+
+    <!-- Physics engine settings -->
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size> <!-- Maximum time step size -->
+      <real_time_factor>1.0</real_time_factor> <!-- Real-time factor -->
+      <real_time_update_rate>1000</real_time_update_rate> <!-- Update rate in Hz -->
     </physics>
 
+    <!-- Sunlight -->
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
-      <pose>0 0 10 0 0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
-      <specular>0.2 0.2 0.2 1</specular>
+      <pose>0 0 10 0 0 0</pose> <!-- Position and orientation (x y z roll pitch yaw) -->
+      <diffuse>0.8 0.8 0.8 1.0</diffuse> <!-- Diffuse light color (RGBA) -->
+      <specular>0.2 0.2 0.2 1.0</specular> <!-- Specular light color (RGBA) -->
       <attenuation>
-        <range>1000</range>
-        <constant>0.9</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
+        <range>1000</range> <!-- Light range -->
+        <constant>0.9</constant> <!-- Constant attenuation -->
+        <linear>0.01</linear> <!-- Linear attenuation -->
+        <quadratic>0.001</quadratic> <!-- Quadratic attenuation -->
       </attenuation>
-      <direction>-0.5 0.1 -0.9</direction>
+      <direction>-0.5 -0.5 -1.0</direction> <!-- Light direction -->
     </light>
 
+    <!-- Ground plane -->
     <model name="ground_plane">
-      <static>true</static>
+      <static>true</static> <!-- Static model -->
       <link name="link">
         <collision name="collision">
           <geometry>
             <plane>
-              <normal>0 0 1</normal>
-              <size>100 100</size>
+              <normal>0 0 1</normal> <!-- Normal vector for the plane -->
+              <size>100 100</size> <!-- Size of the plane -->
             </plane>
           </geometry>
         </collision>
@@ -39,12 +51,24 @@
             </plane>
           </geometry>
           <material>
-            <ambient>0.8 0.8 0.8 1</ambient>
-            <diffuse>0.8 0.8 0.8 1</diffuse>
-            <specular>0.8 0.8 0.8 1</specular>
+            <ambient>0.8 0.8 0.8 1.0</ambient> <!-- Ambient color (RGBA) -->
+            <diffuse>0.8 0.8 0.8 1.0</diffuse> <!-- Diffuse color (RGBA) -->
+            <specular>0.1 0.1 0.1 1.0</specular> <!-- Specular color (RGBA) -->
           </material>
         </visual>
       </link>
     </model>
+    <plugin name='p3d_base_controller' filename='libgazebo_ros_p3d.so'>
+        <alwaysOn>1</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <bodyName>base_link</bodyName>
+        <topicName>base_pose_ground_truth</topicName>
+        <gaussianNoise>0.01</gaussianNoise>
+        <frameName>map</frameName>
+        <xyzOffsets>25.7 25.7 0</xyzOffsets>
+        <rpyOffsets>0 0 0</rpyOffsets>
+    </plugin>
+
+
   </world>
 </sdf>
